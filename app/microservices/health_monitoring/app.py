@@ -1,0 +1,45 @@
+"""Health Monitoring microservice sub-app."""
+
+from __future__ import annotations
+
+from fastapi import FastAPI
+
+from app.settings import settings
+
+HEALTH_MONITORING_URL = settings.SERVICE_HEALTH_MONITORING_URL.rstrip("/")
+
+
+def create_app() -> FastAPI:
+    """Create Health Monitoring sub-app with its own /docs."""
+    app = FastAPI(
+        title="Health Monitoring API",
+        version="0.1.0",
+        description="Health Monitoring microservice - proxy to backend",
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_url="/openapi.json",
+    )
+
+    from app.microservices.health_monitoring.routes import (
+        batch,
+        measure_groups,
+        measure_types,
+        measurements,
+        monitoring_backend,
+        people,
+        relations,
+        reports,
+        units,
+    )
+
+    app.include_router(relations.router)
+    app.include_router(measure_types.router)
+    app.include_router(measure_groups.router)
+    app.include_router(units.router)
+    app.include_router(people.router)
+    app.include_router(measurements.router)
+    app.include_router(reports.router)
+    app.include_router(batch.router)
+    app.include_router(monitoring_backend.router)
+
+    return app
