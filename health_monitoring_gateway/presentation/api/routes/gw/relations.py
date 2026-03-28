@@ -1,100 +1,60 @@
+"""Group-Type Relations endpoints."""
+
 from __future__ import annotations
 
-from typing import Annotated
+from fastapi import APIRouter, HTTPException
 
-from fastapi import APIRouter, Depends, Request
-
-from health_monitoring_gateway.application.call_health_monitoring_backend import (
-    CallHealthMonitoringBackend,
+from health_monitoring_gateway.domain.schemas import (
+    MeasureTypeGroupRelation,
+    MeasureGroupRead,
+    MeasureTypeRead,
+    LinkTypeToGroupResponse,
+    MessageResponse,
 )
-from health_monitoring_gateway.domain import schemas
-from health_monitoring_gateway.presentation.api.dependencies import get_health_monitoring_backend
-from health_monitoring_gateway.presentation.backend_http_bridge import (
-    backend_json,
-    raise_backend_http_error,
-)
+from health_monitoring_gateway.infrastructure.http_client import request
 
 router = APIRouter(tags=["Group-Type Relations"])
 
 
-@router.get(
-    "/measure/types-groups",
-    response_model=list[schemas.MeasureTypeGroupRelation],
-)
-async def list_type_group_relations(
-    request: Request,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, "measure/types-groups")
-    raise_backend_http_error(status, data)
+@router.get("/measure/types-groups", response_model=list[MeasureTypeGroupRelation])
+async def list_type_group_relations():
+    status, data = await request("GET", "measure/types-groups")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.get(
-    "/measure/types/{id_type}/groups",
-    response_model=list[schemas.MeasureGroupRead],
-)
-async def groups_for_type(
-    request: Request,
-    id_type: int,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, f"measure/types/{id_type}/groups")
-    raise_backend_http_error(status, data)
+@router.get("/measure/types/{type_id}/groups", response_model=list[MeasureGroupRead])
+async def groups_for_type(type_id: int):
+    status, data = await request("GET", f"measure/types/{type_id}/groups")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.get(
-    "/measure/groups/{id_group}/types",
-    response_model=list[schemas.MeasureTypeRead],
-)
-async def types_for_group(
-    request: Request,
-    id_group: int,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(
-        request,
-        backend,
-        f"measure/groups/{id_group}/types",
-    )
-    raise_backend_http_error(status, data)
+@router.get("/measure/groups/{group_id}/types", response_model=list[MeasureTypeRead])
+async def types_for_group(group_id: int):
+    status, data = await request("GET", f"measure/groups/{group_id}/types")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data
 
 
 @router.post(
-    "/measure/groups/{id_group}/types/{id_type}",
-    response_model=schemas.LinkTypeToGroupResponse,
+    "/measure/groups/{group_id}/types/{type_id}", response_model=LinkTypeToGroupResponse
 )
-async def link_type_to_group(
-    request: Request,
-    id_group: int,
-    id_type: int,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(
-        request,
-        backend,
-        f"measure/groups/{id_group}/types/{id_type}",
-    )
-    raise_backend_http_error(status, data)
+async def link_type_to_group(group_id: int, type_id: int):
+    status, data = await request("POST", f"measure/groups/{group_id}/types/{type_id}")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data
 
 
 @router.delete(
-    "/measure/groups/{id_group}/types/{id_type}",
-    response_model=schemas.MessageResponse,
+    "/measure/groups/{group_id}/types/{type_id}", response_model=MessageResponse
 )
-async def unlink_type_from_group(
-    request: Request,
-    id_group: int,
-    id_type: int,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(
-        request,
-        backend,
-        f"measure/groups/{id_group}/types/{id_type}",
-    )
-    raise_backend_http_error(status, data)
+async def unlink_type_from_group(group_id: int, type_id: int):
+    status, data = await request("DELETE", f"measure/groups/{group_id}/types/{type_id}")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data

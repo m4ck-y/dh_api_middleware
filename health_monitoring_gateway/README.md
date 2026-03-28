@@ -2,21 +2,18 @@
 
 ## Overview
 
-HTTP gateway/middleware that proxies requests to the Health Monitoring backend, providing a unified entry point with optional cross-cutting concerns.
+Gateway service for Health Monitoring microservice. Proxies requests to backend via HTTP.
 
 ## Files
 
-- [application/](application/) - Use case orchestration
-- [domain/](domain/) - Backend contracts and DTOs
-- [infrastructure/](infrastructure/) - HTTP client and settings
-- [presentation/](presentation/) - FastAPI routes and handlers
+- [domain/](domain/) - Pydantic schemas
+- [infrastructure/](infrastructure/) - HTTP client
+- [presentation/](presentation/) - FastAPI routes
 
 ## Purpose
 
-Bounded context for Health Monitoring API gateway. Exposes `/health_monitoring/*` routes that delegate to the backend via HTTP, enabling firewall logic without modifying backend code.
+Provides `/health_monitoring/*` routes that proxy to Health Monitoring backend. Stateless HTTP proxy with no database access. Security layer: if compromised, attacker only accesses this proxy, not actual services.
 
 ## Exports
 
-- HttpxHealthMonitoringBackend - HTTP client for backend communication
-- CallHealthMonitoringBackend - Use case for orchestrating backend calls
-- get_settings - Configuration loader
+- create_health_monitoring_app - Sub-app factory with own /docs

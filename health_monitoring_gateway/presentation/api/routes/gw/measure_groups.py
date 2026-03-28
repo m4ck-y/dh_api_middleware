@@ -1,102 +1,68 @@
+"""Measure Groups endpoints."""
+
 from __future__ import annotations
 
-from typing import Annotated
+from fastapi import APIRouter, HTTPException
 
-from fastapi import APIRouter, Depends, Request
-
-from health_monitoring_gateway.application.call_health_monitoring_backend import (
-    CallHealthMonitoringBackend,
+from health_monitoring_gateway.domain.schemas import (
+    MeasureGroupCreate,
+    MeasureGroupRead,
+    MessageResponse,
 )
-from health_monitoring_gateway.domain import schemas
-from health_monitoring_gateway.presentation.api.dependencies import get_health_monitoring_backend
-from health_monitoring_gateway.presentation.backend_http_bridge import (
-    backend_json,
-    raise_backend_http_error,
-)
+from health_monitoring_gateway.infrastructure.http_client import request
 
 router = APIRouter(tags=["Measure Groups"])
 
 
-@router.get("/measure/groups", response_model=list[schemas.MeasureGroupRead])
-async def list_groups(
-    request: Request,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, "measure/groups")
-    raise_backend_http_error(status, data)
+@router.get("/measure/groups", response_model=list[MeasureGroupRead])
+async def list_measure_groups():
+    status, data = await request("GET", "measure/groups")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.get("/measure/groups/{id}", response_model=schemas.MeasureGroupRead)
-async def get_group(
-    request: Request,
-    id: int,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, f"measure/groups/{id}")
-    raise_backend_http_error(status, data)
+@router.get("/measure/groups/{group_id}", response_model=MeasureGroupRead)
+async def get_measure_group(group_id: int):
+    status, data = await request("GET", f"measure/groups/{group_id}")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.post("/measure/groups", response_model=schemas.MeasureGroupRead)
-async def create_group(
-    request: Request,
-    payload: schemas.MeasureGroupCreate,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(
-        request,
-        backend,
-        "measure/groups",
-        body=payload.model_dump_json().encode(),
-        json_request=True,
+@router.post("/measure/groups", response_model=MeasureGroupRead, status_code=201)
+async def create_measure_group(payload: MeasureGroupCreate):
+    status, data = await request("POST", "measure/groups", json=payload.model_dump())
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
+    return data
+
+
+@router.put("/measure/groups/{group_id}", response_model=MeasureGroupRead)
+async def update_measure_group(group_id: int, payload: MeasureGroupCreate):
+    status, data = await request(
+        "PUT", f"measure/groups/{group_id}", json=payload.model_dump()
     )
-    raise_backend_http_error(status, data)
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.put("/measure/groups/{id}", response_model=schemas.MeasureGroupRead)
-async def update_group(
-    request: Request,
-    id: int,
-    payload: schemas.MeasureGroupCreate,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(
-        request,
-        backend,
-        f"measure/groups/{id}",
-        body=payload.model_dump_json().encode(),
-        json_request=True,
+@router.patch("/measure/groups/{group_id}", response_model=MeasureGroupRead)
+async def patch_measure_group(group_id: int, payload: MeasureGroupCreate):
+    status, data = await request(
+        "PATCH",
+        f"measure/groups/{group_id}",
+        json=payload.model_dump(exclude_unset=True),
     )
-    raise_backend_http_error(status, data)
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.patch("/measure/groups/{id}", response_model=schemas.MeasureGroupRead)
-async def patch_group(
-    request: Request,
-    id: int,
-    payload: schemas.MeasureGroupCreate,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(
-        request,
-        backend,
-        f"measure/groups/{id}",
-        body=payload.model_dump_json(exclude_unset=True).encode(),
-        json_request=True,
-    )
-    raise_backend_http_error(status, data)
-    return data
-
-
-@router.delete("/measure/groups/{id}", response_model=schemas.MessageResponse)
-async def delete_group(
-    request: Request,
-    id: int,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, f"measure/groups/{id}")
-    raise_backend_http_error(status, data)
+@router.delete("/measure/groups/{group_id}", response_model=MessageResponse)
+async def delete_measure_group(group_id: int):
+    status, data = await request("DELETE", f"measure/groups/{group_id}")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data

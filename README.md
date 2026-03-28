@@ -1,76 +1,119 @@
-# api-middleware
+# API Gateway — Middleware
 
-## Decisión y propósito
+## Purpose
 
-Este repositorio es el **punto de entrada HTTP** para integrarse con [Health Monitoring](../health_monitoring): un **middleware/gateway** que **no replica la lógica de negocio** del backend, sino que **expone la misma forma de API** (rutas y contratos documentados) y **delega cada llamada al servicio Health Monitoring por HTTP**.
+**Central gateway/middleware for multiple microservices.** The frontend points here instead of calling each microservice directly.
 
-**Por qué existe**
+## Why This Exists
 
-- Unificar **una URL y un contrato** (`/health_monitoring/...`) para clientes, aunque el backend evolucione o se despliegue aparte.
-- Añadir **cortafuegos lógicos** cuando haga falta: autenticación, rate limiting, logging, transformación mínima de cabeceras o cuerpos, sin tocar el código del dominio en `health_monitoring`.
-- Mantener **OpenAPI/Swagger en el middleware** usando esquemas Pydantic alineados con el backend, para que la documentación sea usable desde aquí.
+- **Single entry point**: Frontend only needs to know one URL instead of multiple service URLs.
+- **Security**: If the gateway is compromised, the attacker only accesses this proxy—not the actual services with business logic and databases.
+- **No database**: This gateway is stateless and has no database access. It's a pure HTTP proxy.
+- **Separate docs**: Each microservice has its own `/<service>/docs`.
 
-**Qué no es**
+## Architecture
 
-- No sustituye la base de datos ni las reglas de negocio: esas viven en Health Monitoring.
-- No es obligatorio para desarrollar solo el backend; solo tiene sentido cuando el flujo deseado es *cliente → middleware → Health Monitoring*.
+```
+                    ┌─────────────────────────┐
+                    │   Frontend/Client       │
+                    └───────────┬─────────────┘
+                                │
+                                ▼
+                    ┌─────────────────────────┐
+                    │    API Gateway          │  ← This project
+                    │  (no DB, proxy only)   │
+                    └───────────┬─────────────┘
+                                │
+        ┌───────────────────────┼───────────────────────┐
+        │                       │                       │
+        ▼                       ▼                       ▼
+┌───────────────┐     ┌───────────────┐     ┌───────────────┐
+│  Main /docs  │     │  /health_     │     │  /other_     │
+│               │     │  monitoring/   │     │  service/    │
+│               │     │  docs         │     │  docs        │
+└───────────────┘     └───────────────┘     └───────────────┘
+```
 
-## Alcance
+## Services & Documentation
 
-| Sí hace | No hace |
-|--------|--------|
-| Expone rutas bajo `/health_monitoring` equivalentes a las del API de Health Monitoring | Persistencia, ORM ni reglas clínicas |
-| Llama al backend por HTTP (`httpx`) con la misma ruta relativa y query | Sustituir la documentación oficial del backend si difieren; hay que alinear `domain/schemas` |
-| Documenta request/response en `/docs` con Pydantic | Instalar ni ejecutar PostgreSQL por sí mismo |
+| Service | Docs URL | Prefix |
+|---------|----------|--------|
+| Main Gateway | [/docs](/docs) | `/` |
+| Health Monitoring | [/health_monitoring/docs](/health_monitoring/docs) | `/health_monitoring` |
 
-Referencia de rutas del backend: [`health_monitoring/backend/docs/endpoints.md`](../health_monitoring/backend/docs/endpoints.md) y el código en [`health_monitoring/backend/app`](../health_monitoring/backend/app).
+## Adding a New Microservice
+
+1. Create a new route file: `presentation/api/routes/my_service.py`
+
+```python
+from fastapi import FastAPI
+
+def create_my_service_app() -> FastAPI:
+    app = FastAPI(
+        title="My Service API",
+        description="My microservice description",
+        docs_url="/docs",
+        redoc_url="/redoc",
+    )
+    # Add routers here
+    return app
+```
+
+2. Mount it in `factory.py`:
+
+```python
+from my_service import create_my_service_app
+
+app.mount("/my_service", create_my_service_app())
+```
+
+## Security Notes
+
+- This gateway has **NO database access**
+- It's a stateless HTTP proxy
+- No business logic here—just forwarding requests
 
 ## Stack
 
-- Python 3.13+ (`.python-version`)
-- FastAPI, Uvicorn, httpx (`pyproject.toml`)
-- Gestión de dependencias: **uv** + `pyproject.toml`
+- Python 3.13+
+- FastAPI, Uvicorn, httpx
+- Managed with **uv**
 
-Convenciones de estructura inspiradas en [`template_backend_python`](../template_backend_python) (capas y nombres explícitos).
-
-## Estructura del código
-
-Paquete **`health_monitoring_gateway`** (bounded context “gateway a Health Monitoring”):
-
-| Capa | Contenido |
-|------|-----------|
-| `domain/` | Contrato HTTP hacia el backend (`HealthMonitoringBackendPort`, `BackendHttpResponse`), errores de transporte, **DTOs** en `domain/schemas/` (mantenerlos alineados con `health_monitoring/backend/app/schemas`) |
-| `application/` | `CallHealthMonitoringBackend`: orquesta la llamada HTTP (métodos permitidos, ruta normalizada) |
-| `infrastructure/` | `Settings`, cliente `HttpxHealthMonitoringBackend`, política de cabeceras |
-| `presentation/api/` | `factory.py`, `middleware_health`, routers documentados en `routes/gw/` |
-
-Punto de entrada ASGI: `main.py` → `app = create_app()`.
-
-## Superficie HTTP y documentación
-
-- **`GET /health`**: salud **solo del proceso middleware** (no comprueba Health Monitoring).
-- **`/health_monitoring/...`**: mismas rutas relativas que el API de Health Monitoring; cada operación **invoca el backend** con método, query y cuerpo adecuados. La documentación interactiva está en **`/docs`** y **`/redoc`**.
-
-Ejemplo: con base del backend `http://localhost:8000/api/health-monitoring` y middleware en el puerto `8080`,  
-`GET http://localhost:8080/health_monitoring/people` → `GET http://localhost:8000/api/health-monitoring/people`.
-
-## Variables de entorno
-
-| Variable | Valor por defecto | Uso |
-|----------|-------------------|-----|
-| `HEALTH_MONITORING_BACKEND_BASE_URL` | `http://127.0.0.1:8000/api/health-monitoring` | URL base del API Health Monitoring (sin barra final obligatoria). Si no está definida, se usa `HEALTH_MONITORING_UPSTREAM_BASE_URL` por compatibilidad. |
-| `GATEWAY_HOST` | `0.0.0.0` | Host al arrancar con `python main.py` |
-| `GATEWAY_PORT` | `8080` | Puerto al arrancar con `python main.py` |
-
-## Desarrollo local
+## Development
 
 ```bash
 cd api_middleware
 uv sync
 uv run uvicorn main:app --host 0.0.0.0 --port 8080
-# alternativa: uv run python main.py
+# or: uv run python main.py
 ```
 
-Arranca Health Monitoring (o apunta `HEALTH_MONITORING_BACKEND_BASE_URL` al entorno correcto) antes de probar rutas bajo `/health_monitoring`.
+## Environment Variables
 
-Cuando cambien los modelos del backend, actualiza los espejos en `health_monitoring_gateway/domain/schemas/` para que Swagger y validación sigan siendo fieles al contrato.
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `HEALTH_MONITORING_BACKEND_BASE_URL` | `http://127.0.0.1:8000/api/health-monitoring` | Health Monitoring backend URL |
+| `GATEWAY_HOST` | `0.0.0.0` | Host to bind |
+| `GATEWAY_PORT` | `8080` | Port to bind |
+
+## API Documentation
+
+- **Main gateway**: `http://localhost:8080/docs`
+- **Health Monitoring**: `http://localhost:8080/health_monitoring/docs`
+- **Health check**: `GET /health`
+
+## Structure
+
+```
+api_middleware/
+├── main.py                          # Entry point
+└── health_monitoring_gateway/
+    ├── domain/schemas/              # Pydantic schemas
+    ├── infrastructure/             # HTTP client
+    └── presentation/api/
+        ├── factory.py               # Creates app & mounts sub-apps
+        └── routes/
+            ├── health_monitoring.py # Sub-app factory
+            ├── middleware_health.py # Gateway health
+            └── gw/                  # Health Monitoring routes
+```

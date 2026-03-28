@@ -2,19 +2,24 @@
 
 ## Overview
 
-Backend HTTP contracts and Pydantic DTOs aligned with Health Monitoring API.
+Pydantic schemas for API documentation.
 
 ## Files
 
-- [backend_http.py](backend_http.py) - Backend port and response contracts
-- [schemas/](schemas/) - Pydantic schemas mirroring backend models
+- [backend_http.py](backend_http.py) - Backend HTTP contracts
+- [schemas/](schemas/) - Pydantic DTOs
 
 ## Purpose
 
-Defines HealthMonitoringBackendPort protocol and BackendHttpResponse DTO. Contains no I/O logic, only contracts and domain models.
+Contains DTOs aligned with Health Monitoring backend for OpenAPI documentation.
 
 ## Exports
 
-- HealthMonitoringBackendPort - Protocol for backend HTTP calls
-- BackendHttpResponse - Normalized HTTP response from backend
-- HealthMonitoringTransportError - Transport-level exception
+- PersonCreate, PersonRead, PersonUpdate
+- MeasurementCreate, MeasurementRead
+- MeasureTypeCreate, MeasureTypeRead
+- MeasureGroupCreate, MeasureGroupRead
+- MeasureTypeGroupCreate, MeasureTypeGroupRead, MeasureTypeGroupRelation
+- UnitCreate, UnitRead
+- MeasurementAggregation
+- CountResponse, MessageResponse, BackendHealthStatusResponse, BackendVersionResponse

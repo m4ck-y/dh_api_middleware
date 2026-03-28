@@ -2,13 +2,13 @@
 
 ## Overview
 
-HTTP client implementation and runtime configuration.
+HTTP client and runtime configuration.
 
 ## Files
 
-- [settings.py](settings.py) - Environment configuration
-- [http/](http/) - HTTP client and header policies
+- [settings.py](settings.py) - Environment configuration (used by main.py)
+- [http_client.py](http_client.py) - Simple httpx client for backend calls
 
 ## Purpose
 
-Provides HttpxHealthMonitoringBackend implementation and Settings configuration. Contains all I/O-bound code.
+Provides simple HTTP client to call backend services. No database access.

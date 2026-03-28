@@ -1,73 +1,60 @@
+"""Backend Health & Monitoring endpoints."""
+
 from __future__ import annotations
 
-from typing import Annotated
+from fastapi import APIRouter, HTTPException
 
-from fastapi import APIRouter, Depends, Request
-
-from health_monitoring_gateway.application.call_health_monitoring_backend import (
-    CallHealthMonitoringBackend,
+from health_monitoring_gateway.domain.schemas import (
+    BackendHealthStatusResponse,
+    BackendVersionResponse,
+    JsonObjectResponse,
 )
-from health_monitoring_gateway.domain import schemas
-from health_monitoring_gateway.presentation.api.dependencies import get_health_monitoring_backend
-from health_monitoring_gateway.presentation.backend_http_bridge import (
-    backend_json,
-    raise_backend_http_error,
-)
+from health_monitoring_gateway.infrastructure.http_client import request
 
 router = APIRouter(tags=["Health & Monitoring (backend)"])
 
 
-@router.get("/health", response_model=schemas.BackendHealthStatusResponse)
-async def backend_health(
-    request: Request,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, "health")
-    raise_backend_http_error(status, data)
+@router.get("/health", response_model=BackendHealthStatusResponse)
+async def backend_health():
+    status, data = await request("GET", "health")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     if isinstance(data, dict):
-        return schemas.BackendHealthStatusResponse.model_validate(data)
-    return schemas.BackendHealthStatusResponse()
+        return BackendHealthStatusResponse.model_validate(data)
+    return BackendHealthStatusResponse()
 
 
 @router.get("/health/detailed")
-async def backend_health_detailed(
-    request: Request,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, "health/detailed")
-    raise_backend_http_error(status, data)
+async def backend_health_detailed():
+    status, data = await request("GET", "health/detailed")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.get("/version", response_model=schemas.BackendVersionResponse)
-async def backend_version(
-    request: Request,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, "version")
-    raise_backend_http_error(status, data)
-    return schemas.BackendVersionResponse.model_validate(data)
+@router.get("/version", response_model=BackendVersionResponse)
+async def backend_version():
+    status, data = await request("GET", "version")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
+    return BackendVersionResponse.model_validate(data)
 
 
-@router.post("/admin/migrate", response_model=schemas.JsonObjectResponse)
-async def backend_migrate(
-    request: Request,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, "admin/migrate")
-    raise_backend_http_error(status, data)
+@router.post("/admin/migrate", response_model=JsonObjectResponse)
+async def backend_migrate():
+    status, data = await request("POST", "admin/migrate")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     if isinstance(data, dict):
-        return schemas.JsonObjectResponse.model_validate(data)
-    return schemas.JsonObjectResponse()
+        return JsonObjectResponse.model_validate(data)
+    return JsonObjectResponse()
 
 
-@router.post("/admin/clear-cache", response_model=schemas.JsonObjectResponse)
-async def backend_clear_cache(
-    request: Request,
-    backend: Annotated[CallHealthMonitoringBackend, Depends(get_health_monitoring_backend)],
-):
-    status, data = await backend_json(request, backend, "admin/clear-cache")
-    raise_backend_http_error(status, data)
+@router.post("/admin/clear-cache", response_model=JsonObjectResponse)
+async def backend_clear_cache():
+    status, data = await request("POST", "admin/clear-cache")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
     if isinstance(data, dict):
-        return schemas.JsonObjectResponse.model_validate(data)
-    return schemas.JsonObjectResponse()
+        return JsonObjectResponse.model_validate(data)
+    return JsonObjectResponse()

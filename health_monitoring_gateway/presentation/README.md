@@ -6,9 +6,13 @@ FastAPI HTTP handlers and route definitions.
 
 ## Files
 
-- [backend_http_bridge.py](backend_http_bridge.py) - HTTP bridge for backend responses
 - [api/](api/) - FastAPI app factory and routes
 
 ## Purpose
 
-Contains all HTTP presentation logic: FastAPI routers, request handlers, and response transformation. Bridges domain/use cases to HTTP clients.
+Contains HTTP presentation logic: FastAPI routers and request handlers. Each route proxies to Health Monitoring backend via httpx.
+
+## Exports
+
+- create_app - Main gateway app factory
+- create_health_monitoring_app - Health Monitoring sub-app factory

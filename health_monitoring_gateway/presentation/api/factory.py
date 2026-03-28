@@ -1,80 +1,60 @@
-"""Assemble the FastAPI application (composition root for HTTP)."""
+"""FastAPI app factory with sub-apps for each microservice."""
 
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-import httpx
-from fastapi import APIRouter, FastAPI
-
-from health_monitoring_gateway.infrastructure.http.httpx_health_monitoring_backend import (
-    HttpxHealthMonitoringBackend,
-)
-from health_monitoring_gateway.infrastructure.settings import get_settings
-from health_monitoring_gateway.presentation.api.routes.gw import (
-    batch,
-    measure_groups,
-    measure_types,
-    measurements,
-    monitoring_backend,
-    people,
-    relations,
-    reports,
-    units,
+from health_monitoring_gateway.presentation.api.routes.health_monitoring import (
+    create_health_monitoring_app,
 )
 from health_monitoring_gateway.presentation.api.routes.middleware_health import (
     router as middleware_health_router,
 )
 
 
-@asynccontextmanager
-async def _lifespan(app: FastAPI):
-    settings = get_settings()
-    timeout = httpx.Timeout(60.0)
-    limits = httpx.Limits(max_keepalive_connections=20, max_connections=100)
-    async with httpx.AsyncClient(
-        timeout=timeout,
-        limits=limits,
-        follow_redirects=False,
-    ) as client:
-        app.state.health_monitoring_backend = HttpxHealthMonitoringBackend(
-            settings=settings,
-            client=client,
-        )
-        yield
-
-
-def _build_health_monitoring_router() -> APIRouter:
-    """
-    Include order: static paths before dynamic variants are handled per-router.
-    `relations` first keeps `/measure/types-groups` before other `/measure/types/...` routes.
-    """
-    r = APIRouter(prefix="/health_monitoring")
-    r.include_router(relations.router)
-    r.include_router(measure_types.router)
-    r.include_router(measure_groups.router)
-    r.include_router(units.router)
-    r.include_router(people.router)
-    r.include_router(measurements.router)
-    r.include_router(reports.router)
-    r.include_router(batch.router)
-    r.include_router(monitoring_backend.router)
-    return r
-
-
 def create_app() -> FastAPI:
+    """Create the main gateway application.
+
+    Each microservice is mounted as a sub-app with its own /docs.
+    - Main gateway: http://localhost:8080/docs
+    - Health Monitoring: http://localhost:8080/health_monitoring/docs
+    """
     app = FastAPI(
-        title="API Middleware — Health Monitoring Gateway",
+        title="API Gateway — Middleware",
         version="0.1.0",
-        lifespan=_lifespan,
-        description=(
-            "Middleware in front of Health Monitoring. "
-            "`GET /health` is this process only. "
-            "Routes under `/health_monitoring` call the Health Monitoring backend over HTTP; "
-            "Pydantic schemas live in `health_monitoring_gateway.domain.schemas` — align them with "
-            "`health_monitoring/backend/app/schemas` when the backend evolves."
-        ),
+        description="""
+## Overview
+
+Central gateway/middleware for multiple microservices.
+
+## Services
+
+| Service | Docs | Prefix |
+|---------|------|--------|
+| Main Gateway | [/docs](/docs) | `/` |
+| Health Monitoring | [/health_monitoring/docs](/health_monitoring/docs) | `/health_monitoring` |
+
+## Security
+
+This gateway has **NO database access**. It's a stateless HTTP proxy.
+If compromised, the attacker only accesses this proxy, not the actual services.
+        """,
+        docs_url="/docs",
+        redoc_url="/redoc",
     )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     app.include_router(middleware_health_router)
-    app.include_router(_build_health_monitoring_router())
+
+    health_monitoring_app = create_health_monitoring_app()
+    app.mount("/health_monitoring", health_monitoring_app)
+
     return app
