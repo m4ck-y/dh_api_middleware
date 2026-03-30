@@ -5,8 +5,7 @@ from pydantic import BaseModel
 
 class MeasureTypeBase(BaseModel):
     name: str
-    description: str | None = None
-    unit_id: int | None = None
+    id_unit: int
 
 
 class MeasureTypeCreate(MeasureTypeBase):
@@ -15,7 +14,6 @@ class MeasureTypeCreate(MeasureTypeBase):
 
 class MeasureTypeRead(MeasureTypeBase):
     id: int
-    created_at: str
 
     class Config:
         from_attributes = True

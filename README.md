@@ -21,16 +21,16 @@
                                 ▼
                     ┌─────────────────────────┐
                     │    API Gateway          │  ← This project
-                    │  (no DB, proxy only)   │
+                    │  (no DB, proxy only)    │
                     └───────────┬─────────────┘
                                 │
         ┌───────────────────────┼───────────────────────┐
         │                       │                       │
         ▼                       ▼                       ▼
 ┌───────────────┐     ┌───────────────┐     ┌───────────────┐
-│  Main /docs   │     │  /health_    │     │  /other_     │
-│               │     │  monitoring/  │     │  service/    │
-│               │     │  docs        │     │  docs        │
+│  Main /docs   │     │  /health_     │     │  /other_      │
+│               │     │  monitoring/  │     │  service/     │
+│               │     │  docs         │     │  docs         │
 └───────────────┘     └───────────────┘     └───────────────┘
 ```
 

@@ -1,13 +1,15 @@
 """Measurement schemas."""
 
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class MeasurementBase(BaseModel):
-    person_id: int
-    measure_type_id: int
+    id_person: int
+    id_measure_type: int
     value: float
-    event_at: str
+    notes: str | None = None
+    event_at: datetime
 
 
 class MeasurementCreate(MeasurementBase):
@@ -16,8 +18,6 @@ class MeasurementCreate(MeasurementBase):
 
 class MeasurementRead(MeasurementBase):
     id: int
-    created_at: str
-    updated_at: str
 
     class Config:
         from_attributes = True

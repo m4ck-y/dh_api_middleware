@@ -14,6 +14,7 @@ class UnitCreate(UnitBase):
 
 class UnitRead(UnitBase):
     id: int
+    created_at: str
 
     class Config:
         from_attributes = True

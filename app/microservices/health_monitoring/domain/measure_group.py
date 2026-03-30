@@ -14,6 +14,7 @@ class MeasureGroupCreate(MeasureGroupBase):
 
 class MeasureGroupRead(MeasureGroupBase):
     id: int
+    created_at: str
 
     class Config:
         from_attributes = True
