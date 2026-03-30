@@ -1,6 +1,12 @@
 """Shared domain schemas."""
 
-from app.shared.domain.api_response import ApiResponse, PaginationResponse
+from app.shared.domain.api_response import (
+    ApiResponseBase,
+    ApiResponseSingle,
+    ApiResponsePaginated,
+    PaginationResponse,
+    InternalCode,
+)
 from app.shared.domain.common import (
     BackendHealthStatusResponse,
     BackendVersionResponse,
@@ -10,8 +16,11 @@ from app.shared.domain.common import (
 )
 
 __all__ = [
-    "ApiResponse",
+    "ApiResponseBase",
+    "ApiResponseSingle",
+    "ApiResponsePaginated",
     "PaginationResponse",
+    "InternalCode",
     "CountResponse",
     "MessageResponse",
     "BackendHealthStatusResponse",

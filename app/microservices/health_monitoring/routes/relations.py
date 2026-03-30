@@ -7,7 +7,8 @@ from fastapi import APIRouter, HTTPException, Query
 from app.http_client import request
 from app.microservices.health_monitoring.app import HEALTH_MONITORING_URL
 from app.microservices.health_monitoring.domain import (
-    ApiResponse,
+    ApiResponseSingle,
+    ApiResponsePaginated,
     LinkTypeToGroupResponse,
     MeasureGroupRead,
     MeasureTypeGroupRelation,
@@ -19,7 +20,8 @@ router = APIRouter(tags=["Group-Type Relations"])
 
 
 @router.get(
-    "/measure/types-groups", response_model=ApiResponse[list[MeasureTypeGroupRelation]]
+    "/measure/types-groups",
+    response_model=ApiResponsePaginated[list[MeasureTypeGroupRelation]],
 )
 async def list_type_group_relations(
     page: int = Query(1, ge=1, description="Page number"),
@@ -37,7 +39,7 @@ async def list_type_group_relations(
 
 @router.get(
     "/measure/types/{type_id}/groups",
-    response_model=ApiResponse[list[MeasureGroupRead]],
+    response_model=ApiResponsePaginated[list[MeasureGroupRead]],
 )
 async def groups_for_type(
     type_id: int,
@@ -56,7 +58,7 @@ async def groups_for_type(
 
 @router.get(
     "/measure/groups/{group_id}/types",
-    response_model=ApiResponse[list[MeasureTypeRead]],
+    response_model=ApiResponsePaginated[list[MeasureTypeRead]],
 )
 async def types_for_group(
     group_id: int,

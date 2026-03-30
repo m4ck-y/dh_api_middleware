@@ -1,7 +1,9 @@
 """Health Monitoring domain schemas."""
 
 from app.shared.domain import (
-    ApiResponse,
+    ApiResponseBase,
+    ApiResponseSingle,
+    ApiResponsePaginated,
     PaginationResponse,
     BackendHealthStatusResponse,
     BackendVersionResponse,
@@ -42,6 +44,8 @@ from app.microservices.health_monitoring.domain.unit import (
 __all__ = [
     # API Response
     "ApiResponse",
+    "ApiResponseSingle",
+    "ApiResponsePaginated",
     "PaginationResponse",
     # Person
     "PersonCreate",

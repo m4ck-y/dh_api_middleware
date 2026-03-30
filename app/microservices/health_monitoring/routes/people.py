@@ -9,7 +9,8 @@ from fastapi import APIRouter, HTTPException, Query
 from app.http_client import request
 from app.microservices.health_monitoring.app import HEALTH_MONITORING_URL
 from app.microservices.health_monitoring.domain import (
-    ApiResponse,
+    ApiResponsePaginated,
+    ApiResponseSingle,
     CountResponse,
     MessageResponse,
     PersonCreate,
@@ -20,7 +21,7 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["People"])
 
 
-@router.get("/people", response_model=ApiResponse[list[PersonRead]])
+@router.get("/people", response_model=ApiResponsePaginated[list[PersonRead]])
 async def list_people(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),
@@ -42,7 +43,7 @@ async def people_count():
     return data
 
 
-@router.get("/people/{person_id}", response_model=PersonRead)
+@router.get("/people/{person_id}", response_model=ApiResponseSingle[PersonRead])
 async def get_person(person_id: int):
     """Get a person by ID."""
     status, data = await request(HEALTH_MONITORING_URL, "GET", f"people/{person_id}")

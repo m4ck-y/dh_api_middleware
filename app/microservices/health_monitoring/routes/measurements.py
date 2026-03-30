@@ -9,7 +9,8 @@ from fastapi import APIRouter, HTTPException, Query
 from app.http_client import request
 from app.microservices.health_monitoring.app import HEALTH_MONITORING_URL
 from app.microservices.health_monitoring.domain import (
-    ApiResponse,
+    ApiResponsePaginated,
+    ApiResponseSingle,
     MeasurementCreate,
     MeasurementRead,
     MessageResponse,
@@ -18,7 +19,7 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["Measurements"])
 
 
-@router.get("/measurements", response_model=ApiResponse[list[MeasurementRead]])
+@router.get("/measurements", response_model=ApiResponsePaginated[list[MeasurementRead]])
 async def list_measurements(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),
@@ -48,7 +49,9 @@ async def list_measurements(
     return data
 
 
-@router.get("/measurements/{measurement_id}", response_model=MeasurementRead)
+@router.get(
+    "/measurements/{measurement_id}", response_model=ApiResponseSingle[MeasurementRead]
+)
 async def get_measurement(measurement_id: int):
     """Get a measurement by ID."""
     status, data = await request(

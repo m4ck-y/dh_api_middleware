@@ -7,7 +7,8 @@ from fastapi import APIRouter, HTTPException, Query
 from app.http_client import request
 from app.microservices.health_monitoring.app import HEALTH_MONITORING_URL
 from app.microservices.health_monitoring.domain import (
-    ApiResponse,
+    ApiResponseSingle,
+    ApiResponsePaginated,
     MeasureGroupCreate,
     MeasureGroupRead,
     MessageResponse,
@@ -16,7 +17,9 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["Measure Groups"])
 
 
-@router.get("/measure/groups", response_model=ApiResponse[list[MeasureGroupRead]])
+@router.get(
+    "/measure/groups", response_model=ApiResponsePaginated[list[MeasureGroupRead]]
+)
 async def list_measure_groups(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),
@@ -31,7 +34,9 @@ async def list_measure_groups(
     return data
 
 
-@router.get("/measure/groups/{group_id}", response_model=MeasureGroupRead)
+@router.get(
+    "/measure/groups/{group_id}", response_model=ApiResponseSingle[MeasureGroupRead]
+)
 async def get_measure_group(group_id: int):
     """Get a measure group by ID."""
     status, data = await request(

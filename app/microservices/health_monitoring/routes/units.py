@@ -7,7 +7,8 @@ from fastapi import APIRouter, HTTPException, Query
 from app.http_client import request
 from app.microservices.health_monitoring.app import HEALTH_MONITORING_URL
 from app.microservices.health_monitoring.domain import (
-    ApiResponse,
+    ApiResponseSingle,
+    ApiResponsePaginated,
     CountResponse,
     MessageResponse,
     UnitCreate,
@@ -17,7 +18,7 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["Units"])
 
 
-@router.get("/units", response_model=ApiResponse[list[UnitRead]])
+@router.get("/units", response_model=ApiResponsePaginated[list[UnitRead]])
 async def list_units(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),
@@ -39,7 +40,7 @@ async def units_count():
     return data
 
 
-@router.get("/units/{unit_id}", response_model=UnitRead)
+@router.get("/units/{unit_id}", response_model=ApiResponseSingle[UnitRead])
 async def get_unit(unit_id: int):
     """Get a unit by ID."""
     status, data = await request(HEALTH_MONITORING_URL, "GET", f"units/{unit_id}")
