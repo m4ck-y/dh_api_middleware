@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException, Query
 from app.http_client import request
 from app.microservices.health_monitoring.app import HEALTH_MONITORING_URL
 from app.microservices.health_monitoring.domain import (
+    ApiResponsePaginated,
     MeasurementAggregation,
     MeasurementRead,
     MeasureTypeRead,
@@ -18,7 +19,10 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["Reports"])
 
 
-@router.get("/people/{person_id}/measurements", response_model=list[MeasurementRead])
+@router.get(
+    "/people/{person_id}/measurements",
+    response_model=ApiResponsePaginated[MeasurementRead],
+)
 async def person_measurements(person_id: int):
     status, data = await request(
         HEALTH_MONITORING_URL, "GET", f"people/{person_id}/measurements"
@@ -51,7 +55,8 @@ async def measure_type_stats(
 
 
 @router.get(
-    "/people/{person_id}/measurements/latest", response_model=list[MeasurementRead]
+    "/people/{person_id}/measurements/latest",
+    response_model=ApiResponsePaginated[MeasurementRead],
 )
 async def person_latest_measurements(person_id: int):
     status, data = await request(
@@ -62,7 +67,10 @@ async def person_latest_measurements(person_id: int):
     return data
 
 
-@router.get("/people/{person_id}/measure/types", response_model=list[MeasureTypeRead])
+@router.get(
+    "/people/{person_id}/measure/types",
+    response_model=ApiResponsePaginated[MeasureTypeRead],
+)
 async def person_measure_types(person_id: int):
     status, data = await request(
         HEALTH_MONITORING_URL, "GET", f"people/{person_id}/measure/types"
@@ -72,7 +80,10 @@ async def person_measure_types(person_id: int):
     return data
 
 
-@router.get("/measurements/latest-by-person-type", response_model=list[MeasurementRead])
+@router.get(
+    "/measurements/latest-by-person-type",
+    response_model=ApiResponsePaginated[MeasurementRead],
+)
 async def latest_by_person_type():
     status, data = await request(
         HEALTH_MONITORING_URL, "GET", "measurements/latest-by-person-type"
@@ -154,7 +165,8 @@ async def weekly_measurements(
 
 
 @router.get(
-    "/people/{person_id}/measurements/daily", response_model=list[MeasurementRead]
+    "/people/{person_id}/measurements/daily",
+    response_model=ApiResponsePaginated[MeasurementRead],
 )
 async def daily_measurements(
     person_id: int,

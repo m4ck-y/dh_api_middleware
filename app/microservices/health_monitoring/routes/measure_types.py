@@ -18,9 +18,7 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["Measure Types"])
 
 
-@router.get(
-    "/measure/types", response_model=ApiResponsePaginated[list[MeasureTypeRead]]
-)
+@router.get("/measure/types", response_model=ApiResponsePaginated[MeasureTypeRead])
 async def list_measure_types(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),
@@ -44,7 +42,9 @@ async def measure_types_count():
     return data
 
 
-@router.get("/measure/types/with-data", response_model=list[MeasureTypeRead])
+@router.get(
+    "/measure/types/with-data", response_model=ApiResponsePaginated[MeasureTypeRead]
+)
 async def measure_types_with_data():
     """List measure types that have associated measurements."""
     status, data = await request(

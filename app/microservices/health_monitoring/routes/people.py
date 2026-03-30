@@ -21,7 +21,7 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["People"])
 
 
-@router.get("/people", response_model=ApiResponsePaginated[list[PersonRead]])
+@router.get("/people", response_model=ApiResponsePaginated[PersonRead])
 async def list_people(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),

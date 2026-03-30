@@ -17,9 +17,7 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["Measure Groups"])
 
 
-@router.get(
-    "/measure/groups", response_model=ApiResponsePaginated[list[MeasureGroupRead]]
-)
+@router.get("/measure/groups", response_model=ApiResponsePaginated[MeasureGroupRead])
 async def list_measure_groups(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),

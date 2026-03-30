@@ -21,7 +21,7 @@ router = APIRouter(tags=["Group-Type Relations"])
 
 @router.get(
     "/measure/types-groups",
-    response_model=ApiResponsePaginated[list[MeasureTypeGroupRelation]],
+    response_model=ApiResponsePaginated[MeasureTypeGroupRelation],
 )
 async def list_type_group_relations(
     page: int = Query(1, ge=1, description="Page number"),
@@ -39,7 +39,7 @@ async def list_type_group_relations(
 
 @router.get(
     "/measure/types/{type_id}/groups",
-    response_model=ApiResponsePaginated[list[MeasureGroupRead]],
+    response_model=ApiResponsePaginated[MeasureGroupRead],
 )
 async def groups_for_type(
     type_id: int,
@@ -58,7 +58,7 @@ async def groups_for_type(
 
 @router.get(
     "/measure/groups/{group_id}/types",
-    response_model=ApiResponsePaginated[list[MeasureTypeRead]],
+    response_model=ApiResponsePaginated[MeasureTypeRead],
 )
 async def types_for_group(
     group_id: int,
