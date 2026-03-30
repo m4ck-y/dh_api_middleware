@@ -8,7 +8,8 @@ Main application package containing gateway, services, and configuration.
 
 - [gateway.py](gateway.py) - Main FastAPI app factory
 - [http_client.py](http_client.py) - Shared HTTP client for backend calls
-- [main/](main/) - Gateway endpoints (health)
+- [main.py](main.py) - Entry point
+- [internal/](internal/) - Gateway endpoints (health)
 - [settings/](settings/) - Environment configuration
 - [microservices/](microservices/) - Microservice sub-apps
 

@@ -1,4 +1,4 @@
-"""Entry module: ASGI app and optional `python main.py` server."""
+"""Entry module: ASGI app and optional `python entrypoint.py` server."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
-        "main:app",
+        "app.entrypoint:app",
         host=settings.HOST,
         port=settings.PORT,
         reload=False,

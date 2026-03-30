@@ -1,4 +1,24 @@
-"""Health Monitoring microservice sub-app."""
+"""Health Monitoring API - Proxy to backend.
+
+## Overview
+
+Proxies requests to Health Monitoring backend service.
+Manages people, measurements, measure types, units, and reports.
+
+## Endpoints
+
+- People CRUD
+- Measurements CRUD
+- Measure Types CRUD
+- Measure Groups CRUD
+- Units CRUD
+- Reports & aggregations
+- Batch operations
+
+## Backend
+
+Proxies to: `{settings.SERVICE_HEALTH_MONITORING_URL}`
+"""
 
 from __future__ import annotations
 
@@ -14,7 +34,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Health Monitoring API",
         version="0.1.0",
-        description="Health Monitoring microservice - proxy to backend",
+        description=__doc__,
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",

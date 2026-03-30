@@ -45,54 +45,42 @@
 
 ```
 api_middleware/
-├── main.py                    # Entry point
 ├── app/
-│   ├── __init__.py
+│   ├── main.py                  # Entry point
+│   ├── gateway.py              # Main app factory
 │   ├── http_client.py         # Shared HTTP client
 │   ├── settings/
 │   │   ├── __init__.py
-│   │   └── env.py            # Microservices URLs
-│   ├── gateway.py            # Main app factory
-│   ├── main/
+│   │   └── env.py            # pydantic-settings
+│   ├── internal/
 │   │   └── health.py         # Gateway health endpoint
 │   └── microservices/
 │       ├── __init__.py
 │       └── health_monitoring/
 │           ├── __init__.py
 │           ├── app.py         # Sub-app factory
-│           ├── domain/
-│           │   └── schemas.py # Pydantic schemas
+│           ├── domain/        # Pydantic schemas
+│           │   ├── __init__.py
+│           │   ├── person.py
+│           │   ├── measurement.py
+│           │   └── ...
 │           └── routes/        # Endpoint handlers
-│               ├── people.py
-│               ├── measurements.py
-│               └── ...
 ```
 
 ## Adding a New Microservice
 
 1. Create folder: `app/microservices/my_service/`
-2. Create `app.py` with:
+2. Create `app.py` with module docstring for Swagger
+3. Create routes in `routes/` folder (ALWAYS use response_model)
+4. Create schemas in `domain/` matching backend field names
+5. Mount in `app/gateway.py`
+6. Add URL to `.env`
 
-```python
-from fastapi import FastAPI
+## Routes & Schemas Rules
 
-def create_app() -> FastAPI:
-    app = FastAPI(
-        title="My Service API",
-        docs_url="/docs",
-    )
-    # Add routers
-    return app
-```
-
-3. Mount in `app/gateway.py`:
-
-```python
-from app.microservices.my_service import create_app
-app.mount("/my_service", create_app())
-```
-
-4. Add URL in environment (see below)
+- **ALWAYS use response_model** for Swagger documentation
+- **Schema field names must match backend** exactly (e.g., `id_measure_type`, not `measure_type_id`)
+- Create separate schema files per entity in `domain/`
 
 ## Environment Variables
 
@@ -100,36 +88,17 @@ app.mount("/my_service", create_app())
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `GATEWAY_HOST` | `0.0.0.0` | Host to bind |
-| `GATEWAY_PORT` | `8080` | Port to bind |
+| `HOST` | `0.0.0.0` | Host to bind |
+| `PORT` | `8000` | Port to bind |
 
 ### Microservices
 
 Format: `SERVICE_<SERVICE_NAME>_URL`
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SERVICE_HEALTH_MONITORING_URL` | `http://127.0.0.1:8000/api/health-monitoring` | Health Monitoring backend |
-| `SERVICE_OTHER_SERVICE_URL` | - | Other service (add as needed) |
-
-**Pattern**: `SERVICE_<NOMBRE_MAYUSCULA>_URL`
-
-Example for new service:
-```bash
-SERVICE_MY_NEW_SERVICE_URL=http://localhost:8001
-```
-
-## Security Notes
-
-- This gateway has **NO database access**
-- It's a stateless HTTP proxy
-- No business logic here—just forwarding requests
-
-## Stack
-
-- Python 3.13+
-- FastAPI, Uvicorn, httpx
-- Managed with **uv**
+| Variable | Description |
+|----------|-------------|
+| `SERVICE_HEALTH_MONITORING_URL` | Health Monitoring backend (required) |
+| `SERVICE_MY_SERVICE_URL` | Other service (add as needed) |
 
 ## Development
 
@@ -138,12 +107,11 @@ cd api_middleware
 cp .env.example .env
 # Edit .env with your service URLs
 uv sync
-uv run uvicorn main:app --host 0.0.0.0 --port 8080
-# or: uv run python main.py
+uv run uvicorn app.main:app --reload
 ```
 
 ## API Documentation
 
-- **Main gateway**: `http://localhost:8080/docs`
-- **Health Monitoring**: `http://localhost:8080/health_monitoring/docs`
+- **Main gateway**: `http://localhost:8000/docs`
+- **Health Monitoring**: `http://localhost:8000/health_monitoring/docs`
 - **Health check**: `GET /health`

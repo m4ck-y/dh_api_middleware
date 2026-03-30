@@ -1,4 +1,26 @@
-"""Main gateway application factory."""
+"""API Gateway - Central HTTP proxy for microservices.
+
+## Overview
+
+Stateless gateway that proxies requests to backend services.
+Frontend points here instead of individual microservices.
+
+## Security
+
+- **NO database**: Pure HTTP proxy
+- If compromised, attacker only accesses this proxy
+
+## Services
+
+| Service | Docs | Prefix |
+|---------|------|--------|
+| Main | [/docs](/docs) | `/` |
+| Health Monitoring | [/health_monitoring/docs](/health_monitoring/docs) | `/health_monitoring` |
+
+## Environment
+
+Configure services with `SERVICE_<NAME>_URL` environment variables.
+"""
 
 from __future__ import annotations
 
@@ -9,25 +31,11 @@ from app.settings import settings
 
 
 def create_app() -> FastAPI:
-    """Create main gateway application.
-
-    Each microservice is mounted as a sub-app with its own /docs.
-    """
+    """Create main gateway application."""
     app = FastAPI(
         title="API Gateway",
         version="0.1.0",
-        description="""
-## Services
-
-| Service | Docs | Prefix |
-|---------|------|--------|
-| Main | [/docs](/docs) | `/` |
-| Health Monitoring | [/health_monitoring/docs](/health_monitoring/docs) | `/health_monitoring` |
-
-## Security
-
-This gateway has **NO database**. Pure HTTP proxy.
-        """,
+        description=__doc__,
         docs_url="/docs",
         redoc_url="/redoc",
     )
@@ -40,7 +48,7 @@ This gateway has **NO database**. Pure HTTP proxy.
         allow_headers=["*"],
     )
 
-    from app.main.health import router as health_router
+    from app.internal.health import router as health_router
 
     app.include_router(health_router)
 
