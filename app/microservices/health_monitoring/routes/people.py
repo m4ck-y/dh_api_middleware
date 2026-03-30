@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Query
 
 from app.http_client import request
 from app.microservices.health_monitoring.app import HEALTH_MONITORING_URL
 from app.microservices.health_monitoring.domain import (
+    ApiResponse,
     CountResponse,
     MessageResponse,
     PersonCreate,
@@ -17,9 +20,14 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["People"])
 
 
-@router.get("/people", response_model=list[PersonRead])
-async def list_people():
-    status, data = await request(HEALTH_MONITORING_URL, "GET", "people")
+@router.get("/people", response_model=ApiResponse[list[PersonRead]])
+async def list_people(
+    page: int = Query(1, ge=1, description="Page number"),
+    limit: int = Query(100, ge=1, le=100, description="Items per page"),
+):
+    """List all people with pagination."""
+    params = {"page": page, "limit": limit}
+    status, data = await request(HEALTH_MONITORING_URL, "GET", "people", params=params)
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data
@@ -27,6 +35,7 @@ async def list_people():
 
 @router.get("/people/count", response_model=CountResponse)
 async def people_count():
+    """Get total count of people."""
     status, data = await request(HEALTH_MONITORING_URL, "GET", "people/count")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -35,6 +44,7 @@ async def people_count():
 
 @router.get("/people/{person_id}", response_model=PersonRead)
 async def get_person(person_id: int):
+    """Get a person by ID."""
     status, data = await request(HEALTH_MONITORING_URL, "GET", f"people/{person_id}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -43,6 +53,7 @@ async def get_person(person_id: int):
 
 @router.post("/people", response_model=PersonRead, status_code=201)
 async def create_person(payload: PersonCreate):
+    """Create a new person."""
     status, data = await request(
         HEALTH_MONITORING_URL, "POST", "people", json=payload.model_dump()
     )
@@ -53,6 +64,7 @@ async def create_person(payload: PersonCreate):
 
 @router.put("/people/{person_id}", response_model=PersonRead)
 async def update_person(person_id: int, payload: PersonCreate):
+    """Update a person completely (replace all fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL, "PUT", f"people/{person_id}", json=payload.model_dump()
     )
@@ -63,6 +75,7 @@ async def update_person(person_id: int, payload: PersonCreate):
 
 @router.patch("/people/{person_id}", response_model=PersonRead)
 async def patch_person(person_id: int, payload: PersonUpdate):
+    """Update a person partially (only provided fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PATCH",
@@ -76,6 +89,7 @@ async def patch_person(person_id: int, payload: PersonUpdate):
 
 @router.delete("/people/{person_id}", response_model=MessageResponse)
 async def delete_person(person_id: int):
+    """Delete a person by ID."""
     status, data = await request(HEALTH_MONITORING_URL, "DELETE", f"people/{person_id}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)

@@ -22,6 +22,8 @@ app/
 │   └── env.py          # pydantic-settings (HOST, PORT, SERVICE_*_URL)
 ├── internal/
 │   └── health.py       # Gateway endpoints (/health)
+├── shared/             # Shared code across microservices
+│   └── domain/         # Shared schemas (ApiResponse, PaginationResponse)
 └── microservices/
     └── health_monitoring/
         ├── app.py       # Sub-app factory

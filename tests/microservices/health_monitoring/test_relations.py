@@ -12,8 +12,8 @@ def test_list_type_group_relations(client):
     assert response.status_code in [200, 500]
     if response.status_code == 200:
         data = response.json()
-        if data:
-            MeasureTypeGroupRelation(**data[0])
+        if data.get("data"):
+            MeasureTypeGroupRelation(**data["data"][0])
 
 
 def test_groups_for_type(client):
@@ -21,8 +21,8 @@ def test_groups_for_type(client):
     assert response.status_code in [200, 500]
     if response.status_code == 200:
         data = response.json()
-        if data:
-            MeasureGroupRead(**data[0])
+        if data.get("data"):
+            MeasureGroupRead(**data["data"][0])
 
 
 def test_types_for_group(client):
@@ -30,5 +30,5 @@ def test_types_for_group(client):
     assert response.status_code in [200, 500]
     if response.status_code == 200:
         data = response.json()
-        if data:
-            MeasureTypeRead(**data[0])
+        if data.get("data"):
+            MeasureTypeRead(**data["data"][0])

@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException, Query
 from app.http_client import request
 from app.microservices.health_monitoring.app import HEALTH_MONITORING_URL
 from app.microservices.health_monitoring.domain import (
+    ApiResponse,
     MeasurementCreate,
     MeasurementRead,
     MessageResponse,
@@ -17,14 +18,19 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["Measurements"])
 
 
-@router.get("/measurements", response_model=list[MeasurementRead])
+@router.get("/measurements", response_model=ApiResponse[list[MeasurementRead]])
 async def list_measurements(
-    person_id: Optional[int] = Query(None),
-    measure_type_id: Optional[int] = Query(None),
-    event_at_gte: Optional[str] = Query(None),
-    event_at_lte: Optional[str] = Query(None),
+    page: int = Query(1, ge=1, description="Page number"),
+    limit: int = Query(100, ge=1, le=100, description="Items per page"),
+    person_id: Optional[int] = Query(None, description="Filter by person ID"),
+    measure_type_id: Optional[int] = Query(
+        None, description="Filter by measure type ID"
+    ),
+    event_at_gte: Optional[str] = Query(None, description="Filter by event date >= "),
+    event_at_lte: Optional[str] = Query(None, description="Filter by event date <="),
 ):
-    params = {}
+    """List all measurements with pagination and optional filters."""
+    params = {"page": page, "limit": limit}
     if person_id is not None:
         params["person_id"] = person_id
     if measure_type_id is not None:
@@ -35,7 +41,7 @@ async def list_measurements(
         params["event_at_lte"] = event_at_lte
 
     status, data = await request(
-        HEALTH_MONITORING_URL, "GET", "measurements", params=params or None
+        HEALTH_MONITORING_URL, "GET", "measurements", params=params
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -44,6 +50,7 @@ async def list_measurements(
 
 @router.get("/measurements/{measurement_id}", response_model=MeasurementRead)
 async def get_measurement(measurement_id: int):
+    """Get a measurement by ID."""
     status, data = await request(
         HEALTH_MONITORING_URL, "GET", f"measurements/{measurement_id}"
     )
@@ -54,6 +61,7 @@ async def get_measurement(measurement_id: int):
 
 @router.post("/measurements", response_model=MeasurementRead, status_code=201)
 async def create_measurement(payload: MeasurementCreate):
+    """Create a new measurement."""
     status, data = await request(
         HEALTH_MONITORING_URL, "POST", "measurements", json=payload.model_dump()
     )
@@ -64,6 +72,7 @@ async def create_measurement(payload: MeasurementCreate):
 
 @router.put("/measurements/{measurement_id}", response_model=MeasurementRead)
 async def update_measurement(measurement_id: int, payload: MeasurementCreate):
+    """Update a measurement completely (replace all fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PUT",
@@ -77,6 +86,7 @@ async def update_measurement(measurement_id: int, payload: MeasurementCreate):
 
 @router.patch("/measurements/{measurement_id}", response_model=MeasurementRead)
 async def patch_measurement(measurement_id: int, payload: MeasurementCreate):
+    """Update a measurement partially (only provided fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PATCH",
@@ -90,6 +100,7 @@ async def patch_measurement(measurement_id: int, payload: MeasurementCreate):
 
 @router.delete("/measurements/{measurement_id}", response_model=MessageResponse)
 async def delete_measurement(measurement_id: int):
+    """Delete a measurement by ID."""
     status, data = await request(
         HEALTH_MONITORING_URL, "DELETE", f"measurements/{measurement_id}"
     )

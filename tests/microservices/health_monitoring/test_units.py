@@ -8,8 +8,8 @@ def test_list_units(client):
     assert response.status_code in [200, 500]
     if response.status_code == 200:
         data = response.json()
-        if data:
-            UnitRead(**data[0])
+        if data.get("data"):
+            UnitRead(**data["data"][0])
 
 
 def test_get_units_count(client):

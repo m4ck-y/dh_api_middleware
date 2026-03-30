@@ -8,8 +8,8 @@ def test_list_people(client):
     assert response.status_code in [200, 500]
     if response.status_code == 200:
         data = response.json()
-        if data:
-            PersonRead(**data[0])  # Validate schema
+        if data.get("data"):
+            PersonRead(**data["data"][0])  # Validate schema
 
 
 def test_get_people_count(client):

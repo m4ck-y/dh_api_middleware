@@ -83,20 +83,36 @@ __all__ = ["MyEntity"]
 `app/microservices/my_service/routes/my_entity.py`:
 
 ```python
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from app.http_client import request
 from app.microservices.my_service.app import MY_SERVICE_URL
-from app.microservices.my_service.domain import MyEntity
+from app.microservices.health_monitoring.domain import MyEntity  # Use from health_monitoring or your service
+from app.shared.domain import ApiResponse
 
 router = APIRouter(tags=["My Entity"])
 
-@router.get("/my-entity", response_model=list[MyEntity])
-async def list_my_entities():
-    status, data = await request(MY_SERVICE_URL, "GET", "my-entity")
+# List endpoints return ApiResponse with pagination
+@router.get("/my-entity", response_model=ApiResponse[list[MyEntity]])
+async def list_my_entities(
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
+):
+    params = {"page": page, "limit": limit}
+    status, data = await request(MY_SERVICE_URL, "GET", "my-entity", params=params)
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
+    return data
+
+# Single record endpoints return directly the entity
+@router.get("/my-entity/{entity_id}", response_model=MyEntity)
+async def get_my_entity(entity_id: int):
+    status, data = await request(MY_SERVICE_URL, "GET", f"my-entity/{entity_id}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data
 ```
+
+**Note:** All list endpoints use `ApiResponse[list[T]]` for consistent response format with pagination.
 
 ### 5. Add URL to Environment
 

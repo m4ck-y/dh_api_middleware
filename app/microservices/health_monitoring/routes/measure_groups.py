@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from app.http_client import request
 from app.microservices.health_monitoring.app import HEALTH_MONITORING_URL
 from app.microservices.health_monitoring.domain import (
+    ApiResponse,
     MeasureGroupCreate,
     MeasureGroupRead,
     MessageResponse,
@@ -15,9 +16,16 @@ from app.microservices.health_monitoring.domain import (
 router = APIRouter(tags=["Measure Groups"])
 
 
-@router.get("/measure/groups", response_model=list[MeasureGroupRead])
-async def list_measure_groups():
-    status, data = await request(HEALTH_MONITORING_URL, "GET", "measure/groups")
+@router.get("/measure/groups", response_model=ApiResponse[list[MeasureGroupRead]])
+async def list_measure_groups(
+    page: int = Query(1, ge=1, description="Page number"),
+    limit: int = Query(100, ge=1, le=100, description="Items per page"),
+):
+    """List all measure groups with pagination."""
+    params = {"page": page, "limit": limit}
+    status, data = await request(
+        HEALTH_MONITORING_URL, "GET", "measure/groups", params=params
+    )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data
@@ -25,6 +33,7 @@ async def list_measure_groups():
 
 @router.get("/measure/groups/{group_id}", response_model=MeasureGroupRead)
 async def get_measure_group(group_id: int):
+    """Get a measure group by ID."""
     status, data = await request(
         HEALTH_MONITORING_URL, "GET", f"measure/groups/{group_id}"
     )
@@ -35,6 +44,7 @@ async def get_measure_group(group_id: int):
 
 @router.post("/measure/groups", response_model=MeasureGroupRead, status_code=201)
 async def create_measure_group(payload: MeasureGroupCreate):
+    """Create a new measure group."""
     status, data = await request(
         HEALTH_MONITORING_URL, "POST", "measure/groups", json=payload.model_dump()
     )
@@ -45,6 +55,7 @@ async def create_measure_group(payload: MeasureGroupCreate):
 
 @router.put("/measure/groups/{group_id}", response_model=MeasureGroupRead)
 async def update_measure_group(group_id: int, payload: MeasureGroupCreate):
+    """Update a measure group completely (replace all fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PUT",
@@ -58,6 +69,7 @@ async def update_measure_group(group_id: int, payload: MeasureGroupCreate):
 
 @router.patch("/measure/groups/{group_id}", response_model=MeasureGroupRead)
 async def patch_measure_group(group_id: int, payload: MeasureGroupCreate):
+    """Update a measure group partially (only provided fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PATCH",
@@ -71,6 +83,7 @@ async def patch_measure_group(group_id: int, payload: MeasureGroupCreate):
 
 @router.delete("/measure/groups/{group_id}", response_model=MessageResponse)
 async def delete_measure_group(group_id: int):
+    """Delete a measure group by ID."""
     status, data = await request(
         HEALTH_MONITORING_URL, "DELETE", f"measure/groups/{group_id}"
     )

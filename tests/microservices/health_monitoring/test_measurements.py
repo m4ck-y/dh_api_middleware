@@ -8,8 +8,8 @@ def test_list_measurements(client):
     assert response.status_code in [200, 500]
     if response.status_code == 200:
         data = response.json()
-        if data:
-            MeasurementRead(**data[0])
+        if data.get("data"):
+            MeasurementRead(**data["data"][0])
 
 
 def test_list_measurements_filter_by_person(client):
@@ -17,8 +17,8 @@ def test_list_measurements_filter_by_person(client):
     assert response.status_code in [200, 500]
     if response.status_code == 200:
         data = response.json()
-        if data:
-            MeasurementRead(**data[0])
+        if data.get("data"):
+            MeasurementRead(**data["data"][0])
 
 
 def test_list_measurements_filter_by_measure_type(client):
@@ -26,8 +26,8 @@ def test_list_measurements_filter_by_measure_type(client):
     assert response.status_code in [200, 500]
     if response.status_code == 200:
         data = response.json()
-        if data:
-            MeasurementRead(**data[0])
+        if data.get("data"):
+            MeasurementRead(**data["data"][0])
 
 
 def test_get_measurement_not_found(client):

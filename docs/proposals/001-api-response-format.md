@@ -72,10 +72,9 @@ Example: `GET /people?page=2&limit=50`
 
 ## Schemas
 
-Solo dos schemas:
+Located in `app/shared/domain/api_response.py`:
 
 ```python
-# app/schemas/responses.py
 from enum import IntEnum
 from pydantic import BaseModel
 from typing import Generic, TypeVar, Optional
