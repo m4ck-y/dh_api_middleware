@@ -16,6 +16,8 @@ Frontend points here instead of individual microservices.
 |---------|------|--------|
 | Main | [/docs](/docs) | `/` |
 | Health Monitoring | [/health_monitoring/docs](/health_monitoring/docs) | `/health_monitoring` |
+| Message Sender | [/message_sender/docs](/message_sender/docs) | `/message_sender` |
+| Logger Tracer | [/logger_tracer/docs](/logger_tracer/docs) | `/logger_tracer` |
 
 ## Environment
 
@@ -53,7 +55,15 @@ def create_app() -> FastAPI:
     from app.microservices.health_monitoring.app import (
         create_app as create_health_monitoring,
     )
+    from app.microservices.message_sender.app import (
+        create_app as create_message_sender,
+    )
+    from app.microservices.logger_tracer.app import (
+        create_app as create_logger_tracer,
+    )
 
     app.mount("/health_monitoring", create_health_monitoring())
+    app.mount("/message_sender", create_message_sender())
+    app.mount("/logger_tracer", create_logger_tracer())
 
     return app

@@ -6,6 +6,7 @@
 
 ## Why This Exists
 
+- **Explicit Contract (Interface)**: The gateway acts as the strict contract between the frontend and the backends. All schemas and inputs/outputs are explicitly defined here, generating a unified Swagger documentation.
 - **Single entry point**: Frontend only needs to know one URL instead of multiple service URLs.
 - **Security**: If the gateway is compromised, the attacker only accesses this proxy—not the actual services with business logic and databases.
 - **No database**: This gateway is stateless and has no database access. It's a pure HTTP proxy.

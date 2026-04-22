@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     SERVICE_HEALTH_MONITORING_URL: str = ""
+    SERVICE_LOGGER_TRACER_URL: str = ""
+    SERVICE_MESSAGE_SENDER_URL: str = ""
 
     class Config:
         env_file = ".env"

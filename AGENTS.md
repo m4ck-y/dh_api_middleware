@@ -127,12 +127,13 @@ Proxies to: `{settings.SERVICE_NAME_URL}`
 
 ## Important Rules
 
-1. **ALWAYS use response_model** - Required for Swagger documentation
-2. **Schema field names must match backend** - If backend returns `id_measure_type`, use that exact name
-3. **One schema file per entity** - Keep domain/ organized
-4. **Use ApiResponsePaginated for list endpoints** - Wrap paginated list responses
-5. **Use ApiResponseSingle for single record endpoints** - Wrap single object responses
-6. **Use shared domain** - Import from `app.shared.domain`
+1. **Explicit Contract ONLY** - Catch-all proxy routes (`/{path:path}`) are strictly prohibited. The gateway must define every endpoint explicitly.
+2. **ALWAYS use response_model** - Required for Swagger documentation
+3. **Schema field names must match backend** - If backend returns `id_measure_type`, use that exact name
+4. **One schema file per entity** - Keep domain/ organized
+5. **Use ApiResponsePaginated for list endpoints** - Wrap paginated list responses
+6. **Use ApiResponseSingle for single record endpoints** - Wrap single object responses
+7. **Use shared domain** - Import from `app.shared.domain`
 
 ## References
 
