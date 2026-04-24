@@ -4,7 +4,7 @@
 
 - **Stack**: Python 3.13+, FastAPI, httpx, uv
 - **No database**: Stateless HTTP proxy only
-- **Env vars**: `SERVICE_<NAME>_URL`, `HOST`, `PORT`
+- **Env vars**: `SERVICE_<NAME>_URL`, `HOST`, `PORT`, `BASE_PATH`
 
 ## API Response Format
 

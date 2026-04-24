@@ -37,8 +37,14 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json",
     )
 
-    from app.microservices.logger_tracer.routes import events, logs, metrics, traces, batch
-    
+    from app.microservices.logger_tracer.routes import (
+        events,
+        logs,
+        metrics,
+        traces,
+        batch,
+    )
+
     app.include_router(events.router)
     app.include_router(logs.router)
     app.include_router(metrics.router)

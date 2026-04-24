@@ -39,8 +39,8 @@
 
 | Service | Docs URL | Prefix |
 |---------|----------|--------|
-| Main Gateway | [/docs](/docs) | `/` |
-| Health Monitoring | [/health_monitoring/docs](/health_monitoring/docs) | `/health_monitoring` |
+| Main Gateway | `/<BASE_PATH>/docs` | `/` |
+| Health Monitoring | `/<BASE_PATH>/health_monitoring/docs` | `/health_monitoring` |
 
 ## Structure
 
@@ -91,6 +91,7 @@ api_middleware/
 |----------|---------|-------------|
 | `HOST` | `0.0.0.0` | Host to bind |
 | `PORT` | `8000` | Port to bind |
+| `BASE_PATH` | `""` | Base path for the gateway (e.g. `/middleware`) |
 
 ### Microservices
 
@@ -113,6 +114,6 @@ uv run uvicorn app.main:app --reload
 
 ## API Documentation
 
-- **Main gateway**: `http://localhost:8000/docs`
-- **Health Monitoring**: `http://localhost:8000/health_monitoring/docs`
-- **Health check**: `GET /health`
+- **Main gateway**: `http://localhost:8000/middleware/docs`
+- **Health Monitoring**: `http://localhost:8000/middleware/health_monitoring/docs`
+- **Health check**: `GET /middleware/health`

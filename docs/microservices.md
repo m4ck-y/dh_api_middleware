@@ -57,6 +57,9 @@ def create_app() -> FastAPI:
     return app
 ```
 
+> [!IMPORTANT]
+> **DO NOT** set `root_path` in the `FastAPI()` constructor of the sub-app. The main Gateway handles `root_path` propagation automatically via `app.mount()`. Setting it manually will break the routing and documentation when mounted.
+
 ### 3. Create Schemas
 
 `app/microservices/my_service/domain/my_entity.py`:

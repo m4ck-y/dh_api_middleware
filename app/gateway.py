@@ -14,10 +14,10 @@ Frontend points here instead of individual microservices.
 
 | Service | Docs | Prefix |
 |---------|------|--------|
-| Main | [/docs](/docs) | `/` |
-| Health Monitoring | [/health_monitoring/docs](/health_monitoring/docs) | `/health_monitoring` |
-| Message Sender | [/message_sender/docs](/message_sender/docs) | `/message_sender` |
-| Logger Tracer | [/logger_tracer/docs](/logger_tracer/docs) | `/logger_tracer` |
+| Main | [{base_path}/docs]({base_path}/docs) | `/` |
+| Health Monitoring | [{base_path}/health_monitoring/docs]({base_path}/health_monitoring/docs) | `/health_monitoring` |
+| Message Sender | [{base_path}/message_sender/docs]({base_path}/message_sender/docs) | `/message_sender` |
+| Logger Tracer | [{base_path}/logger_tracer/docs]({base_path}/logger_tracer/docs) | `/logger_tracer` |
 
 ## Environment
 
@@ -33,11 +33,12 @@ from app.settings import settings
 
 def create_app() -> FastAPI:
     """Create main gateway application."""
+    base_path = settings.BASE_PATH.rstrip("/")
     app = FastAPI(
         root_path=settings.BASE_PATH,
         title="API Gateway",
         version="0.1.0",
-        description=__doc__,
+        description=__doc__.format(base_path=base_path),
         docs_url="/docs",
         redoc_url="/redoc",
     )

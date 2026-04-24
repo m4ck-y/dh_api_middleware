@@ -6,6 +6,7 @@
 |----------|---------|-------------|
 | `HOST` | `0.0.0.0` | Host to bind |
 | `PORT` | `8000` | Port to bind |
+| `BASE_PATH` | `""` | Base path for the gateway (e.g. `/middleware`) |
 
 ## Microservices
 
@@ -45,5 +46,6 @@ app.mount("/my_service", create_app())
 ```bash
 HOST=0.0.0.0
 PORT=8000
+BASE_PATH="/middleware"
 SERVICE_HEALTH_MONITORING_URL=http://127.0.0.1:8000/api/health-monitoring
 ```
