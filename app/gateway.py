@@ -28,11 +28,13 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.settings import settings
 
 
 def create_app() -> FastAPI:
     """Create main gateway application."""
     app = FastAPI(
+        root_path=settings.BASE_PATH,
         title="API Gateway",
         version="0.1.0",
         description=__doc__,

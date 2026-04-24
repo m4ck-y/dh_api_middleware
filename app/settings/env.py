@@ -8,8 +8,9 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     """Gateway settings loaded from environment."""
 
-    HOST: str = "0.0.0.0"
+    HOST: str = "[IP_ADDRESS]"
     PORT: int = 8000
+    BASE_PATH: str = ""
     SERVICE_HEALTH_MONITORING_URL: str = ""
     SERVICE_LOGGER_TRACER_URL: str = ""
     SERVICE_MESSAGE_SENDER_URL: str = ""
