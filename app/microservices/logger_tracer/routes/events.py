@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
 from app.http_client import request
 from app.settings import settings
-from app.shared.domain.api_response import ApiResponsePaginated
+from app.shared.domain.api_response import ApiResponsePaginated, ApiResponseSingle
 from app.microservices.logger_tracer.domain.models import EventEntry
 
 LOGGER_TRACER_URL = settings.SERVICE_LOGGER_TRACER_URL.rstrip("/")
@@ -27,7 +27,7 @@ async def get_events(
         raise HTTPException(status_code=status_code, detail=data)
     return data
 
-@router.post("/", status_code=201)
+@router.post("/", response_model=ApiResponseSingle, status_code=201)
 async def create_event(payload: EventEntry):
     """Ingest a single high-level event."""
     status_code, data = await request(

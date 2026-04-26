@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     HOST: str = "[IP_ADDRESS]"
     PORT: int = 8000
     BASE_PATH: str = ""
+    ENVIRONMENT: str = "development"
     SERVICE_HEALTH_MONITORING_URL: str = ""
     SERVICE_LOGGER_TRACER_URL: str = ""
     SERVICE_MESSAGE_SENDER_URL: str = ""
