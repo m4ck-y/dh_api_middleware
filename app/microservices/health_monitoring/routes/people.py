@@ -43,44 +43,33 @@ async def people_count():
     return data
 
 
-@router.get("/people/{person_id}", response_model=ApiResponseSingle[PersonRead])
-async def get_person(person_id: int):
-    """Get a person by ID."""
-    status, data = await request(HEALTH_MONITORING_URL, "GET", f"people/{person_id}")
+@router.get("/people/{uuid_person}", response_model=ApiResponseSingle[PersonRead])
+async def get_person(uuid_person: str):
+    """Get a person by UUID."""
+    status, data = await request(HEALTH_MONITORING_URL, "GET", f"people/{uuid_person}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.post("/people", response_model=PersonRead, status_code=201)
-async def create_person(payload: PersonCreate):
-    """Create a new person."""
-    status, data = await request(
-        HEALTH_MONITORING_URL, "POST", "people", json=payload.model_dump()
-    )
-    if status >= 400:
-        raise HTTPException(status_code=status, detail=data)
-    return data
-
-
-@router.put("/people/{person_id}", response_model=PersonRead)
-async def update_person(person_id: int, payload: PersonCreate):
+@router.put("/people/{uuid_person}", response_model=PersonRead)
+async def update_person(uuid_person: str, payload: PersonCreate):
     """Update a person completely (replace all fields)."""
     status, data = await request(
-        HEALTH_MONITORING_URL, "PUT", f"people/{person_id}", json=payload.model_dump()
+        HEALTH_MONITORING_URL, "PUT", f"people/{uuid_person}", json=payload.model_dump()
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.patch("/people/{person_id}", response_model=PersonRead)
-async def patch_person(person_id: int, payload: PersonUpdate):
+@router.patch("/people/{uuid_person}", response_model=PersonRead)
+async def patch_person(uuid_person: str, payload: PersonUpdate):
     """Update a person partially (only provided fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PATCH",
-        f"people/{person_id}",
+        f"people/{uuid_person}",
         json=payload.model_dump(exclude_unset=True),
     )
     if status >= 400:
@@ -88,10 +77,10 @@ async def patch_person(person_id: int, payload: PersonUpdate):
     return data
 
 
-@router.delete("/people/{person_id}", response_model=MessageResponse)
-async def delete_person(person_id: int):
-    """Delete a person by ID."""
-    status, data = await request(HEALTH_MONITORING_URL, "DELETE", f"people/{person_id}")
+@router.delete("/people/{uuid_person}", response_model=MessageResponse)
+async def delete_person(uuid_person: str):
+    """Delete a person by UUID."""
+    status, data = await request(HEALTH_MONITORING_URL, "DELETE", f"people/{uuid_person}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data

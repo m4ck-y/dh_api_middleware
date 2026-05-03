@@ -23,19 +23,19 @@ router = APIRouter(tags=["Measurements"])
 async def list_measurements(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),
-    person_id: Optional[int] = Query(None, description="Filter by person ID"),
-    measure_type_id: Optional[int] = Query(
-        None, description="Filter by measure type ID"
+    uuid_person: Optional[str] = Query(None, description="Filter by person UUID"),
+    uuid_measure_type: Optional[str] = Query(
+        None, description="Filter by measure type UUID"
     ),
     event_at_gte: Optional[str] = Query(None, description="Filter by event date >= "),
     event_at_lte: Optional[str] = Query(None, description="Filter by event date <="),
 ):
     """List all measurements with pagination and optional filters."""
     params = {"page": page, "limit": limit}
-    if person_id is not None:
-        params["person_id"] = person_id
-    if measure_type_id is not None:
-        params["measure_type_id"] = measure_type_id
+    if uuid_person is not None:
+        params["uuid_person"] = uuid_person
+    if uuid_measure_type is not None:
+        params["uuid_measure_type"] = uuid_measure_type
     if event_at_gte:
         params["event_at_gte"] = event_at_gte
     if event_at_lte:
@@ -50,12 +50,12 @@ async def list_measurements(
 
 
 @router.get(
-    "/measurements/{measurement_id}", response_model=ApiResponseSingle[MeasurementRead]
+    "/measurements/{uuid_measurement}", response_model=ApiResponseSingle[MeasurementRead]
 )
-async def get_measurement(measurement_id: int):
-    """Get a measurement by ID."""
+async def get_measurement(uuid_measurement: str):
+    """Get a measurement by UUID."""
     status, data = await request(
-        HEALTH_MONITORING_URL, "GET", f"measurements/{measurement_id}"
+        HEALTH_MONITORING_URL, "GET", f"measurements/{uuid_measurement}"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -73,13 +73,13 @@ async def create_measurement(payload: MeasurementCreate):
     return data
 
 
-@router.put("/measurements/{measurement_id}", response_model=MeasurementRead)
-async def update_measurement(measurement_id: int, payload: MeasurementCreate):
+@router.put("/measurements/{uuid_measurement}", response_model=MeasurementRead)
+async def update_measurement(uuid_measurement: str, payload: MeasurementCreate):
     """Update a measurement completely (replace all fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PUT",
-        f"measurements/{measurement_id}",
+        f"measurements/{uuid_measurement}",
         json=payload.model_dump(),
     )
     if status >= 400:
@@ -87,13 +87,13 @@ async def update_measurement(measurement_id: int, payload: MeasurementCreate):
     return data
 
 
-@router.patch("/measurements/{measurement_id}", response_model=MeasurementRead)
-async def patch_measurement(measurement_id: int, payload: MeasurementCreate):
+@router.patch("/measurements/{uuid_measurement}", response_model=MeasurementRead)
+async def patch_measurement(uuid_measurement: str, payload: MeasurementCreate):
     """Update a measurement partially (only provided fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PATCH",
-        f"measurements/{measurement_id}",
+        f"measurements/{uuid_measurement}",
         json=payload.model_dump(exclude_unset=True),
     )
     if status >= 400:
@@ -101,11 +101,11 @@ async def patch_measurement(measurement_id: int, payload: MeasurementCreate):
     return data
 
 
-@router.delete("/measurements/{measurement_id}", response_model=MessageResponse)
-async def delete_measurement(measurement_id: int):
-    """Delete a measurement by ID."""
+@router.delete("/measurements/{uuid_measurement}", response_model=MessageResponse)
+async def delete_measurement(uuid_measurement: str):
+    """Delete a measurement by UUID."""
     status, data = await request(
-        HEALTH_MONITORING_URL, "DELETE", f"measurements/{measurement_id}"
+        HEALTH_MONITORING_URL, "DELETE", f"measurements/{uuid_measurement}"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)

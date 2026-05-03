@@ -20,21 +20,21 @@ router = APIRouter(tags=["Reports"])
 
 
 @router.get(
-    "/people/{person_id}/measurements",
+    "/people/{uuid_person}/measurements",
     response_model=ApiResponsePaginated[MeasurementRead],
 )
-async def person_measurements(person_id: int):
+async def person_measurements(uuid_person: str):
     status, data = await request(
-        HEALTH_MONITORING_URL, "GET", f"people/{person_id}/measurements"
+        HEALTH_MONITORING_URL, "GET", f"people/{uuid_person}/measurements"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data
 
 
-@router.get("/measure/types/{type_id}/stats", response_model=MeasureTypeStatsResponse)
+@router.get("/measure/types/{uuid_type}/stats", response_model=MeasureTypeStatsResponse)
 async def measure_type_stats(
-    type_id: int,
+    uuid_type: str,
     from_date: Optional[str] = Query(None),
     to_date: Optional[str] = Query(None),
 ):
@@ -46,7 +46,7 @@ async def measure_type_stats(
     status, data = await request(
         HEALTH_MONITORING_URL,
         "GET",
-        f"measure/types/{type_id}/stats",
+        f"measure/types/{uuid_type}/stats",
         params=params or None,
     )
     if status >= 400:
@@ -55,12 +55,12 @@ async def measure_type_stats(
 
 
 @router.get(
-    "/people/{person_id}/measurements/latest",
+    "/people/{uuid_person}/measurements/latest",
     response_model=ApiResponsePaginated[MeasurementRead],
 )
-async def person_latest_measurements(person_id: int):
+async def person_latest_measurements(uuid_person: str):
     status, data = await request(
-        HEALTH_MONITORING_URL, "GET", f"people/{person_id}/measurements/latest"
+        HEALTH_MONITORING_URL, "GET", f"people/{uuid_person}/measurements/latest"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -68,12 +68,12 @@ async def person_latest_measurements(person_id: int):
 
 
 @router.get(
-    "/people/{person_id}/measure/types",
+    "/people/{uuid_person}/measure/types",
     response_model=ApiResponsePaginated[MeasureTypeRead],
 )
-async def person_measure_types(person_id: int):
+async def person_measure_types(uuid_person: str):
     status, data = await request(
-        HEALTH_MONITORING_URL, "GET", f"people/{person_id}/measure/types"
+        HEALTH_MONITORING_URL, "GET", f"people/{uuid_person}/measure/types"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -94,21 +94,21 @@ async def latest_by_person_type():
 
 
 @router.get(
-    "/people/{person_id}/measurements/yearly",
+    "/people/{uuid_person}/measurements/yearly",
     response_model=list[MeasurementAggregation],
 )
 async def yearly_measurements(
-    person_id: int,
+    uuid_person: str,
     year: int = Query(...),
-    measure_type_id: Optional[int] = Query(None),
+    uuid_measure_type: Optional[str] = Query(None),
 ):
     params = {"year": year}
-    if measure_type_id:
-        params["measure_type_id"] = measure_type_id
+    if uuid_measure_type:
+        params["uuid_measure_type"] = uuid_measure_type
     status, data = await request(
         HEALTH_MONITORING_URL,
         "GET",
-        f"people/{person_id}/measurements/yearly",
+        f"people/{uuid_person}/measurements/yearly",
         params=params,
     )
     if status >= 400:
@@ -117,22 +117,22 @@ async def yearly_measurements(
 
 
 @router.get(
-    "/people/{person_id}/measurements/monthly",
+    "/people/{uuid_person}/measurements/monthly",
     response_model=list[MeasurementAggregation],
 )
 async def monthly_measurements(
-    person_id: int,
+    uuid_person: str,
     year: int = Query(...),
     month: int = Query(..., ge=1, le=12),
-    measure_type_id: Optional[int] = Query(None),
+    uuid_measure_type: Optional[str] = Query(None),
 ):
     params = {"year": year, "month": month}
-    if measure_type_id:
-        params["measure_type_id"] = measure_type_id
+    if uuid_measure_type:
+        params["uuid_measure_type"] = uuid_measure_type
     status, data = await request(
         HEALTH_MONITORING_URL,
         "GET",
-        f"people/{person_id}/measurements/monthly",
+        f"people/{uuid_person}/measurements/monthly",
         params=params,
     )
     if status >= 400:
@@ -141,22 +141,22 @@ async def monthly_measurements(
 
 
 @router.get(
-    "/people/{person_id}/measurements/weekly",
+    "/people/{uuid_person}/measurements/weekly",
     response_model=list[MeasurementAggregation],
 )
 async def weekly_measurements(
-    person_id: int,
+    uuid_person: str,
     year: int = Query(...),
     week: int = Query(..., ge=1, le=53),
-    measure_type_id: Optional[int] = Query(None),
+    uuid_measure_type: Optional[str] = Query(None),
 ):
     params = {"year": year, "week": week}
-    if measure_type_id:
-        params["measure_type_id"] = measure_type_id
+    if uuid_measure_type:
+        params["uuid_measure_type"] = uuid_measure_type
     status, data = await request(
         HEALTH_MONITORING_URL,
         "GET",
-        f"people/{person_id}/measurements/weekly",
+        f"people/{uuid_person}/measurements/weekly",
         params=params,
     )
     if status >= 400:
@@ -165,21 +165,21 @@ async def weekly_measurements(
 
 
 @router.get(
-    "/people/{person_id}/measurements/daily",
+    "/people/{uuid_person}/measurements/daily",
     response_model=ApiResponsePaginated[MeasurementRead],
 )
 async def daily_measurements(
-    person_id: int,
+    uuid_person: str,
     date: str = Query(..., description="YYYY-MM-DD"),
-    measure_type_id: Optional[int] = Query(None),
+    uuid_measure_type: Optional[str] = Query(None),
 ):
     params = {"date": date}
-    if measure_type_id:
-        params["measure_type_id"] = measure_type_id
+    if uuid_measure_type:
+        params["uuid_measure_type"] = uuid_measure_type
     status, data = await request(
         HEALTH_MONITORING_URL,
         "GET",
-        f"people/{person_id}/measurements/daily",
+        f"people/{uuid_person}/measurements/daily",
         params=params,
     )
     if status >= 400:

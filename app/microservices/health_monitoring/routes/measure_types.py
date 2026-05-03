@@ -56,12 +56,12 @@ async def measure_types_with_data():
 
 
 @router.get(
-    "/measure/types/{type_id}", response_model=ApiResponseSingle[MeasureTypeRead]
+    "/measure/types/{uuid_type}", response_model=ApiResponseSingle[MeasureTypeRead]
 )
-async def get_measure_type(type_id: int):
-    """Get a measure type by ID."""
+async def get_measure_type(uuid_type: str):
+    """Get a measure type by UUID."""
     status, data = await request(
-        HEALTH_MONITORING_URL, "GET", f"measure/types/{type_id}"
+        HEALTH_MONITORING_URL, "GET", f"measure/types/{uuid_type}"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -79,13 +79,13 @@ async def create_measure_type(payload: MeasureTypeCreate):
     return data
 
 
-@router.put("/measure/types/{type_id}", response_model=MeasureTypeRead)
-async def update_measure_type(type_id: int, payload: MeasureTypeCreate):
+@router.put("/measure/types/{uuid_type}", response_model=MeasureTypeRead)
+async def update_measure_type(uuid_type: str, payload: MeasureTypeCreate):
     """Update a measure type completely (replace all fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PUT",
-        f"measure/types/{type_id}",
+        f"measure/types/{uuid_type}",
         json=payload.model_dump(),
     )
     if status >= 400:
@@ -93,13 +93,13 @@ async def update_measure_type(type_id: int, payload: MeasureTypeCreate):
     return data
 
 
-@router.patch("/measure/types/{type_id}", response_model=MeasureTypeRead)
-async def patch_measure_type(type_id: int, payload: MeasureTypeCreate):
+@router.patch("/measure/types/{uuid_type}", response_model=MeasureTypeRead)
+async def patch_measure_type(uuid_type: str, payload: MeasureTypeCreate):
     """Update a measure type partially (only provided fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PATCH",
-        f"measure/types/{type_id}",
+        f"measure/types/{uuid_type}",
         json=payload.model_dump(exclude_unset=True),
     )
     if status >= 400:
@@ -107,11 +107,11 @@ async def patch_measure_type(type_id: int, payload: MeasureTypeCreate):
     return data
 
 
-@router.delete("/measure/types/{type_id}", response_model=MessageResponse)
-async def delete_measure_type(type_id: int):
-    """Delete a measure type by ID."""
+@router.delete("/measure/types/{uuid_type}", response_model=MessageResponse)
+async def delete_measure_type(uuid_type: str):
+    """Delete a measure type by UUID."""
     status, data = await request(
-        HEALTH_MONITORING_URL, "DELETE", f"measure/types/{type_id}"
+        HEALTH_MONITORING_URL, "DELETE", f"measure/types/{uuid_type}"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)

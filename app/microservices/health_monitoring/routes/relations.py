@@ -38,18 +38,18 @@ async def list_type_group_relations(
 
 
 @router.get(
-    "/measure/types/{type_id}/groups",
+    "/measure/types/{uuid_type}/groups",
     response_model=ApiResponsePaginated[MeasureGroupRead],
 )
 async def groups_for_type(
-    type_id: int,
+    uuid_type: str,
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),
 ):
     """List all groups associated with a specific measure type."""
     params = {"page": page, "limit": limit}
     status, data = await request(
-        HEALTH_MONITORING_URL, "GET", f"measure/types/{type_id}/groups", params=params
+        HEALTH_MONITORING_URL, "GET", f"measure/types/{uuid_type}/groups", params=params
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -57,18 +57,18 @@ async def groups_for_type(
 
 
 @router.get(
-    "/measure/groups/{group_id}/types",
+    "/measure/groups/{uuid_group}/types",
     response_model=ApiResponsePaginated[MeasureTypeRead],
 )
 async def types_for_group(
-    group_id: int,
+    uuid_group: str,
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(100, ge=1, le=100, description="Items per page"),
 ):
     """List all measure types associated with a specific group."""
     params = {"page": page, "limit": limit}
     status, data = await request(
-        HEALTH_MONITORING_URL, "GET", f"measure/groups/{group_id}/types", params=params
+        HEALTH_MONITORING_URL, "GET", f"measure/groups/{uuid_group}/types", params=params
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -76,12 +76,12 @@ async def types_for_group(
 
 
 @router.post(
-    "/measure/groups/{group_id}/types/{type_id}", response_model=LinkTypeToGroupResponse
+    "/measure/groups/{uuid_group}/types/{uuid_type}", response_model=LinkTypeToGroupResponse
 )
-async def link_type_to_group(group_id: int, type_id: int):
+async def link_type_to_group(uuid_group: str, uuid_type: str):
     """Link a measure type to a measure group."""
     status, data = await request(
-        HEALTH_MONITORING_URL, "POST", f"measure/groups/{group_id}/types/{type_id}"
+        HEALTH_MONITORING_URL, "POST", f"measure/groups/{uuid_group}/types/{uuid_type}"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -89,12 +89,12 @@ async def link_type_to_group(group_id: int, type_id: int):
 
 
 @router.delete(
-    "/measure/groups/{group_id}/types/{type_id}", response_model=MessageResponse
+    "/measure/groups/{uuid_group}/types/{uuid_type}", response_model=MessageResponse
 )
-async def unlink_type_from_group(group_id: int, type_id: int):
+async def unlink_type_from_group(uuid_group: str, uuid_type: str):
     """Unlink a measure type from a measure group."""
     status, data = await request(
-        HEALTH_MONITORING_URL, "DELETE", f"measure/groups/{group_id}/types/{type_id}"
+        HEALTH_MONITORING_URL, "DELETE", f"measure/groups/{uuid_group}/types/{uuid_type}"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)

@@ -33,12 +33,12 @@ async def list_measure_groups(
 
 
 @router.get(
-    "/measure/groups/{group_id}", response_model=ApiResponseSingle[MeasureGroupRead]
+    "/measure/groups/{uuid_group}", response_model=ApiResponseSingle[MeasureGroupRead]
 )
-async def get_measure_group(group_id: int):
-    """Get a measure group by ID."""
+async def get_measure_group(uuid_group: str):
+    """Get a measure group by UUID."""
     status, data = await request(
-        HEALTH_MONITORING_URL, "GET", f"measure/groups/{group_id}"
+        HEALTH_MONITORING_URL, "GET", f"measure/groups/{uuid_group}"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -56,13 +56,13 @@ async def create_measure_group(payload: MeasureGroupCreate):
     return data
 
 
-@router.put("/measure/groups/{group_id}", response_model=MeasureGroupRead)
-async def update_measure_group(group_id: int, payload: MeasureGroupCreate):
+@router.put("/measure/groups/{uuid_group}", response_model=MeasureGroupRead)
+async def update_measure_group(uuid_group: str, payload: MeasureGroupCreate):
     """Update a measure group completely (replace all fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PUT",
-        f"measure/groups/{group_id}",
+        f"measure/groups/{uuid_group}",
         json=payload.model_dump(),
     )
     if status >= 400:
@@ -70,13 +70,13 @@ async def update_measure_group(group_id: int, payload: MeasureGroupCreate):
     return data
 
 
-@router.patch("/measure/groups/{group_id}", response_model=MeasureGroupRead)
-async def patch_measure_group(group_id: int, payload: MeasureGroupCreate):
+@router.patch("/measure/groups/{uuid_group}", response_model=MeasureGroupRead)
+async def patch_measure_group(uuid_group: str, payload: MeasureGroupCreate):
     """Update a measure group partially (only provided fields)."""
     status, data = await request(
         HEALTH_MONITORING_URL,
         "PATCH",
-        f"measure/groups/{group_id}",
+        f"measure/groups/{uuid_group}",
         json=payload.model_dump(exclude_unset=True),
     )
     if status >= 400:
@@ -84,11 +84,11 @@ async def patch_measure_group(group_id: int, payload: MeasureGroupCreate):
     return data
 
 
-@router.delete("/measure/groups/{group_id}", response_model=MessageResponse)
-async def delete_measure_group(group_id: int):
-    """Delete a measure group by ID."""
+@router.delete("/measure/groups/{uuid_group}", response_model=MessageResponse)
+async def delete_measure_group(uuid_group: str):
+    """Delete a measure group by UUID."""
     status, data = await request(
-        HEALTH_MONITORING_URL, "DELETE", f"measure/groups/{group_id}"
+        HEALTH_MONITORING_URL, "DELETE", f"measure/groups/{uuid_group}"
     )
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
