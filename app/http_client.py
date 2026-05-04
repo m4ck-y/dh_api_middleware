@@ -15,6 +15,8 @@ async def request(
     params: dict[str, Any] | None = None,
     json: dict[str, Any] | None = None,
     headers: dict[str, str] | None = None,
+    data: dict[str, Any] | None = None,
+    files: list[tuple[str, tuple[str, Any, str]]] | None = None,
 ) -> tuple[int, Any]:
     """Make HTTP request to a microservice. Returns (status_code, body)."""
     url = f"{base_url.rstrip('/')}/{path.lstrip('/')}"
@@ -27,6 +29,8 @@ async def request(
                 params=params,
                 json=json,
                 headers=headers,
+                data=data,
+                files=files,
             )
         except httpx.RequestError as exc:
             raise ConnectionError(f"Service unavailable: {exc}") from exc

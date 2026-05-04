@@ -15,6 +15,16 @@ class Settings(BaseSettings):
     SERVICE_HEALTH_MONITORING_URL: str = ""
     SERVICE_LOGGER_TRACER_URL: str = ""
     SERVICE_MESSAGE_SENDER_URL: str = ""
+    # Core services
+    SERVICE_CORE_URL: str = ""
+    SERVICE_AUTH_URL: str = ""
+    SERVICE_IAM_URL: str = ""
+    SERVICE_MFA_URL: str = ""
+    SERVICE_ONBOARDING_URL: str = ""
+    # Pending
+    SERVICE_CATALOGS_URL: str = ""
+    SERVICE_ORGANIZATIONS_URL: str = ""
+    SERVICE_EXPEDIENT_URL: str = ""
 
     class Config:
         env_file = ".env"

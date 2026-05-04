@@ -1,0 +1,56 @@
+"""IAM domain schemas."""
+
+from app.shared.domain import (
+    ApiResponseSingle,
+    ApiResponsePaginated,
+)
+
+from app.microservices.iam.domain.iam_dto import (
+    ContextResponseDTO,
+    ETenantType,
+    EMembershipStatus,
+    MembershipCreateDTO,
+    MembershipResponseDTO,
+    MembershipUpdateDTO,
+    OperationCreateDTO,
+    OperationResponseDTO,
+    OperationUpdateDTO,
+    PermissionCreateDTO,
+    PermissionResponseDTO,
+    ResourceCreateDTO,
+    ResourceResponseDTO,
+    ResourceUpdateDTO,
+    RoleCreateDTO,
+    RolePermissionsAssignDTO,
+    RoleResponseDTO,
+    RoleUpdateDTO,
+    TenantCreateDTO,
+    TenantResponseDTO,
+    TenantUpdateDTO,
+)
+
+__all__ = [
+    "ApiResponseSingle",
+    "ApiResponsePaginated",
+    "ContextResponseDTO",
+    "ETenantType",
+    "EMembershipStatus",
+    "MembershipCreateDTO",
+    "MembershipResponseDTO",
+    "MembershipUpdateDTO",
+    "OperationCreateDTO",
+    "OperationResponseDTO",
+    "OperationUpdateDTO",
+    "PermissionCreateDTO",
+    "PermissionResponseDTO",
+    "ResourceCreateDTO",
+    "ResourceResponseDTO",
+    "ResourceUpdateDTO",
+    "RoleCreateDTO",
+    "RolePermissionsAssignDTO",
+    "RoleResponseDTO",
+    "RoleUpdateDTO",
+    "TenantCreateDTO",
+    "TenantResponseDTO",
+    "TenantUpdateDTO",
+]

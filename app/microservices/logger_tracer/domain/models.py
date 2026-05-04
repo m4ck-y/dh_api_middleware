@@ -72,7 +72,7 @@ class TraceEntry(BaseModel):
     end_time: float = Field(..., description="Unix timestamp of when the operation completed", examples=[1705315800.456])
     status: str = Field(..., description="Outcome status of the operation (ok, error, timeouts)", examples=["ok"])
     service: str = Field(..., description="The microservice or application that executed this span", examples=["auth-service"])
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Key-value pairs for technical metadata", examples=[{"db_query": "SELECT * FROM users", "cache_hit": false}])
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Key-value pairs for technical metadata", examples=[{"db_query": "SELECT * FROM users", "cache_hit": False}])
 
 # Batch
 class BatchEntry(BaseModel):

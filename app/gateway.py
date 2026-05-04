@@ -12,12 +12,20 @@ Frontend points here instead of individual microservices.
 
 ## Services
 
-| Service | Docs | Prefix |
-|---------|------|--------|
-| Main | [{base_path}/docs]({base_path}/docs) | `/` |
-| Health Monitoring | [{base_path}/health_monitoring/docs]({base_path}/health_monitoring/docs) | `/health_monitoring` |
-| Message Sender | [{base_path}/message_sender/docs]({base_path}/message_sender/docs) | `/message_sender` |
-| Logger Tracer | [{base_path}/logger_tracer/docs]({base_path}/logger_tracer/docs) | `/logger_tracer` |
+| Service | Status | Docs | Prefix |
+|---------|--------|------|--------|
+| Main | RELEASED | [{base_path}/docs]({base_path}/docs) | `/` |
+| Auth | RELEASED | [{base_path}/auth/docs]({base_path}/auth/docs) | `/auth` |
+| IAM | RELEASED | [{base_path}/iam/docs]({base_path}/iam/docs) | `/iam` |
+| Core | RELEASED | [{base_path}/core/docs]({base_path}/core/docs) | `/core` |
+| MFA | RELEASED | [{base_path}/mfa/docs]({base_path}/mfa/docs) | `/mfa` |
+| Onboarding | RELEASED | [{base_path}/onboarding/docs]({base_path}/onboarding/docs) | `/onboarding` |
+| Health Monitoring | RELEASED | [{base_path}/health_monitoring/docs]({base_path}/health_monitoring/docs) | `/health_monitoring` |
+| Message Sender | TESTING | [{base_path}/message_sender/docs]({base_path}/message_sender/docs) | `/message_sender` |
+| Logger Tracer | TESTING | [{base_path}/logger_tracer/docs]({base_path}/logger_tracer/docs) | `/logger_tracer` |
+| Catalogs | PENDING | — | `/catalogs` |
+| Organizations | PENDING | — | `/organizations` |
+| Expedient | PENDING | — | `/expedient` |
 
 ## Environment
 
@@ -52,21 +60,30 @@ def create_app() -> FastAPI:
     )
 
     from app.internal.health import router as health_router
-
     app.include_router(health_router)
 
-    from app.microservices.health_monitoring.app import (
-        create_app as create_health_monitoring,
-    )
-    from app.microservices.message_sender.app import (
-        create_app as create_message_sender,
-    )
-    from app.microservices.logger_tracer.app import (
-        create_app as create_logger_tracer,
-    )
+    # ── RELEASED ─────────────────────────────────────────────────
+    from app.microservices.auth.app import create_app as create_auth
+    from app.microservices.iam.app import create_app as create_iam
+    from app.microservices.core.app import create_app as create_core
+    from app.microservices.mfa.app import create_app as create_mfa
+    from app.microservices.onboarding.app import create_app as create_onboarding
+    from app.microservices.health_monitoring.app import create_app as create_health_monitoring
 
+    app.mount("/auth", create_auth())
+    app.mount("/iam", create_iam())
+    app.mount("/core", create_core())
+    app.mount("/mfa", create_mfa())
+    app.mount("/onboarding", create_onboarding())
     app.mount("/health_monitoring", create_health_monitoring())
+
+    # ── TESTING ──────────────────────────────────────────────────
+    from app.microservices.message_sender.app import create_app as create_message_sender
+    from app.microservices.logger_tracer.app import create_app as create_logger_tracer
+
     app.mount("/message_sender", create_message_sender())
     app.mount("/logger_tracer", create_logger_tracer())
+
+    # ── PENDING: catalogs, organizations, expedient ──────────────
 
     return app
