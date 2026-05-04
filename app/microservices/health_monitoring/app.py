@@ -1,5 +1,9 @@
 """Health Monitoring API - Proxy to backend.
 
+## Test UI
+
+Preview: [{service_url}]({service_url})
+
 ## Overview
 
 Proxies requests to Health Monitoring backend service.
@@ -27,6 +31,7 @@ from fastapi import FastAPI
 from app.settings import settings
 
 HEALTH_MONITORING_URL = settings.SERVICE_HEALTH_MONITORING_URL.rstrip("/")
+_DESC = __doc__.replace("{service_url}", HEALTH_MONITORING_URL) if HEALTH_MONITORING_URL else __doc__
 
 
 def create_app() -> FastAPI:
@@ -34,7 +39,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Health Monitoring API",
         version="0.1.0",
-        description=__doc__,
+        description=_DESC,
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",

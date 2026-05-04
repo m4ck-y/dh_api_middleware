@@ -1,5 +1,9 @@
 """Onboarding API - Self-registration flow.
 
+## Test UI
+
+Preview: [{service_url}]({service_url})
+
 ## Overview
 
 Orchestrates the multi-step onboarding process: waitlist, personal info, OTP, password, address, documents, submit.
@@ -22,13 +26,14 @@ from fastapi import FastAPI
 from app.settings import settings
 
 ONBOARDING_URL = settings.SERVICE_ONBOARDING_URL.rstrip("/")
+_DESC = __doc__.replace("{service_url}", ONBOARDING_URL) if ONBOARDING_URL else __doc__
 
 
 def create_app() -> FastAPI:
     app = FastAPI(
         title="Onboarding API",
         version="0.1.0",
-        description=__doc__,
+        description=_DESC,
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",

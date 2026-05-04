@@ -1,5 +1,9 @@
 """Observability Gateway - Telemetry ingestion.
 
+## Test UI
+
+Preview: [{service_url}]({service_url})
+
 ## Overview
 
 Centralized system for log and event ingestion.
@@ -24,6 +28,7 @@ from fastapi import FastAPI
 from app.settings import settings
 
 LOGGER_TRACER_URL = settings.SERVICE_LOGGER_TRACER_URL.rstrip("/")
+_DESC = __doc__.replace("{service_url}", LOGGER_TRACER_URL) if LOGGER_TRACER_URL else __doc__
 
 
 def create_app() -> FastAPI:
@@ -31,7 +36,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Observability Gateway API",
         version="0.1.0",
-        description=__doc__,
+        description=_DESC,
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",

@@ -1,5 +1,9 @@
 """Core API - People Master Service.
 
+## Test UI
+
+Preview: [{service_url}]({service_url})
+
 ## Overview
 
 Manages persons, contact info (email, phone, address), identifiers, and emergency contacts.
@@ -26,13 +30,14 @@ from fastapi import FastAPI
 from app.settings import settings
 
 CORE_URL = settings.SERVICE_CORE_URL.rstrip("/")
+_DESC = __doc__.replace("{service_url}", CORE_URL) if CORE_URL else __doc__
 
 
 def create_app() -> FastAPI:
     app = FastAPI(
         title="Core API",
         version="0.1.0",
-        description=__doc__,
+        description=_DESC,
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",
