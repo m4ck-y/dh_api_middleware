@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date as t_date
 from enum import Enum
 from typing import Optional
 from uuid import UUID
@@ -66,7 +66,7 @@ class PhoneInputDTO(BaseModel):
 
 
 class BirthInputDTO(BaseModel):
-    date: date = Field(..., description="Date of birth.", examples=["1990-05-15"])
+    date: t_date = Field(..., description="Date of birth.", examples=["1990-05-15"])
     key_country: str = Field(..., description="Country code of birth.", examples=["MX"])
     key_state: Optional[str] = Field(None, description="State code of birth.", examples=["CMX"])
 
