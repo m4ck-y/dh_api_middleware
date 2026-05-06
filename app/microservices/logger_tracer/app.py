@@ -31,7 +31,7 @@ LOGGER_TRACER_URL = settings.SERVICE_LOGGER_TRACER_URL.rstrip("/")
 _DESC = __doc__.replace("{service_url}", LOGGER_TRACER_URL) if LOGGER_TRACER_URL else __doc__
 
 
-def create_app() -> FastAPI:
+def create_app(root_path: str = "") -> FastAPI:
     """Create Logger Tracer sub-app with its own /docs."""
     app = FastAPI(
         title="Observability Gateway API",
@@ -40,6 +40,7 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",
+        root_path=root_path,
     )
 
     from app.microservices.logger_tracer.routes import (

@@ -70,19 +70,19 @@ def create_app() -> FastAPI:
     from app.microservices.onboarding.app import create_app as create_onboarding
     from app.microservices.health_monitoring.app import create_app as create_health_monitoring
 
-    app.mount(f"{root_path}/auth", create_auth())
-    app.mount(f"{root_path}/iam", create_iam())
-    app.mount(f"{root_path}/core", create_core())
-    app.mount(f"{root_path}/mfa", create_mfa())
-    app.mount(f"{root_path}/onboarding", create_onboarding())
-    app.mount(f"{root_path}/health_monitoring", create_health_monitoring())
+    app.mount("/auth", create_auth(root_path=f"{root_path}/auth"))
+    app.mount("/iam", create_iam(root_path=f"{root_path}/iam"))
+    app.mount("/core", create_core(root_path=f"{root_path}/core"))
+    app.mount("/mfa", create_mfa(root_path=f"{root_path}/mfa"))
+    app.mount("/onboarding", create_onboarding(root_path=f"{root_path}/onboarding"))
+    app.mount("/health_monitoring", create_health_monitoring(root_path=f"{root_path}/health_monitoring"))
 
     # ── TESTING ──────────────────────────────────────────────────
     from app.microservices.message_sender.app import create_app as create_message_sender
     from app.microservices.logger_tracer.app import create_app as create_logger_tracer
 
-    app.mount(f"{root_path}/message_sender", create_message_sender())
-    app.mount(f"{root_path}/logger_tracer", create_logger_tracer())
+    app.mount("/message_sender", create_message_sender(root_path=f"{root_path}/message_sender"))
+    app.mount("/logger_tracer", create_logger_tracer(root_path=f"{root_path}/logger_tracer"))
 
     # ── PENDING: catalogs, organizations, expedient ──────────────
 

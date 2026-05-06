@@ -31,7 +31,7 @@ AUTH_URL = settings.SERVICE_AUTH_URL.rstrip("/")
 _DESC = __doc__.replace("{service_url}", AUTH_URL) if AUTH_URL else __doc__
 
 
-def create_app() -> FastAPI:
+def create_app(root_path: str = "") -> FastAPI:
     app = FastAPI(
         title="Auth API",
         version="0.1.0",
@@ -39,6 +39,7 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",
+        root_path=root_path,
     )
 
     from app.microservices.auth.routes.auth import router as auth_router

@@ -34,7 +34,7 @@ HEALTH_MONITORING_URL = settings.SERVICE_HEALTH_MONITORING_URL.rstrip("/")
 _DESC = __doc__.replace("{service_url}", HEALTH_MONITORING_URL) if HEALTH_MONITORING_URL else __doc__
 
 
-def create_app() -> FastAPI:
+def create_app(root_path: str = "") -> FastAPI:
     """Create Health Monitoring sub-app with its own /docs."""
     app = FastAPI(
         title="Health Monitoring API",
@@ -43,6 +43,7 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",
+        root_path=root_path,
     )
 
     from app.microservices.health_monitoring.routes import (
