@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     HOST: str = "[IP_ADDRESS]"
     PORT: int = 8000
     BASE_PATH: str = ""
+    ROOT_PATH: str = "/api/middleware"
     ENVIRONMENT: str = "development"
     SERVICE_HEALTH_MONITORING_URL: str = ""
     SERVICE_LOGGER_TRACER_URL: str = ""
@@ -21,6 +22,8 @@ class Settings(BaseSettings):
     SERVICE_IAM_URL: str = ""
     SERVICE_MFA_URL: str = ""
     SERVICE_ONBOARDING_URL: str = ""
+    SERVICE_STORAGE_URL: str = ""
+    SERVICE_ADMIN_URL: str = ""
     # Pending
     SERVICE_CATALOGS_URL: str = ""
     SERVICE_ORGANIZATIONS_URL: str = ""

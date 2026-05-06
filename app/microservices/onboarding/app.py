@@ -12,7 +12,7 @@ Orchestrates the multi-step onboarding process: waitlist, personal info, OTP, pa
 
 - Waitlist: register, list, check email, invite
 - Onboarding: start, personal-info, otp send/verify, password, address, documents, submit
-- Onboarding Legacy: registro, curp, direccion, ine, comprobante
+- Onboarding Legacy: registro, personal_identifier, direccion, ine, comprobante
 
 ## Backend
 

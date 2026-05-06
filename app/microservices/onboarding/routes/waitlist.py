@@ -22,6 +22,10 @@ router = APIRouter(tags=["Waitlist"])
 
 @router.post("/", response_model=ApiResponseSingle[LeadResponseDTO], status_code=201)
 async def register_lead(payload: RegisterLeadDTO):
+    """
+    Register a new lead in the waitlist.
+    Returns 409 if the email is already registered.
+    """
     status, data = await request(ONBOARDING_URL, "POST", "v1/waitlist", json=payload.model_dump())
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -30,6 +34,10 @@ async def register_lead(payload: RegisterLeadDTO):
 
 @router.get("/check/{email}", response_model=ApiResponseSingle[CheckEmailResponseDTO])
 async def check_email(email: str):
+    """
+    Check if an email is already registered in the waitlist.
+    Useful for real-time validation on landing pages before form submission.
+    """
     status, data = await request(ONBOARDING_URL, "GET", f"v1/waitlist/check/{email}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -43,6 +51,7 @@ async def list_leads(
     status: Optional[str] = Query(None, description="Filter by lifecycle status"),
     source: Optional[str] = Query(None, description="Filter by origin channel"),
 ):
+    """List all waitlist leads with optional filters. Admin only."""
     params = {"page": page, "limit": limit}
     if status:
         params["status"] = status
@@ -56,6 +65,11 @@ async def list_leads(
 
 @router.post("/{email}/invite", response_model=ApiResponseSingle[InviteResponseDTO])
 async def invite_lead(email: str):
+    """
+    Invite a lead to start onboarding.
+    Generates a secure token and sets status to INVITED.
+    Returns 404 if not found, 409 if blocked or already converted.
+    """
     status, data = await request(ONBOARDING_URL, "POST", f"v1/waitlist/{email}/invite")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)

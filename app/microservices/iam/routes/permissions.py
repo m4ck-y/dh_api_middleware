@@ -19,6 +19,7 @@ router = APIRouter(tags=["Permissions"])
 
 @router.post("/", response_model=ApiResponseSingle[PermissionResponseDTO], status_code=201)
 async def create_permission(payload: PermissionCreateDTO):
+    """Create a new permission (resource:operation combination)."""
     status, data = await request(IAM_URL, "POST", "v1/iam/permissions", json=payload.model_dump())
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -31,6 +32,7 @@ async def list_permissions(
     page: int = Query(1, ge=1, description="Page number."),
     limit: int = Query(50, ge=1, le=200, description="Items per page."),
 ):
+    """List all permissions with pagination, optionally filtered by active status."""
     params = {"active_only": active_only, "page": page, "limit": limit}
     status, data = await request(IAM_URL, "GET", "v1/iam/permissions", params=params)
     if status >= 400:
@@ -40,6 +42,7 @@ async def list_permissions(
 
 @router.get("/{uuid_permission}", response_model=ApiResponseSingle[PermissionResponseDTO])
 async def get_permission(uuid_permission: str):
+    """Get a permission by UUID."""
     status, data = await request(IAM_URL, "GET", f"v1/iam/permissions/{uuid_permission}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -48,6 +51,7 @@ async def get_permission(uuid_permission: str):
 
 @router.post("/{uuid_permission}/toggle", response_model=ApiResponseSingle[PermissionResponseDTO])
 async def toggle_permission(uuid_permission: str):
+    """Toggle a permission's active status (activate/deactivate)."""
     status, data = await request(IAM_URL, "POST", f"v1/iam/permissions/{uuid_permission}/toggle")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -56,6 +60,7 @@ async def toggle_permission(uuid_permission: str):
 
 @router.delete("/{uuid_permission}", status_code=204)
 async def delete_permission(uuid_permission: str):
+    """Delete a permission by UUID."""
     status, data = await request(IAM_URL, "DELETE", f"v1/iam/permissions/{uuid_permission}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)

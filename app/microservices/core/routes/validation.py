@@ -23,6 +23,7 @@ async def check_person_exists(
     phone_code: Optional[str] = Query(None, description="Phone country code"),
     phone_number: Optional[str] = Query(None, description="Phone number"),
 ):
+    """Check which registration fields are already in use. UUIDs are logged internally — never returned."""
     params = {}
     if email:
         params["email"] = email

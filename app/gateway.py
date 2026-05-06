@@ -41,12 +41,12 @@ from app.settings import settings
 
 def create_app() -> FastAPI:
     """Create main gateway application."""
-    base_path = settings.BASE_PATH.rstrip("/")
+    root_path = settings.ROOT_PATH.rstrip("/")
     app = FastAPI(
-        root_path=settings.BASE_PATH,
+        root_path=settings.ROOT_PATH,
         title="API Gateway",
         version="0.1.0",
-        description=__doc__.format(base_path=base_path),
+        description=__doc__.format(base_path=root_path),
         docs_url="/docs",
         redoc_url="/redoc",
     )
@@ -70,19 +70,19 @@ def create_app() -> FastAPI:
     from app.microservices.onboarding.app import create_app as create_onboarding
     from app.microservices.health_monitoring.app import create_app as create_health_monitoring
 
-    app.mount("/auth", create_auth())
-    app.mount("/iam", create_iam())
-    app.mount("/core", create_core())
-    app.mount("/mfa", create_mfa())
-    app.mount("/onboarding", create_onboarding())
-    app.mount("/health_monitoring", create_health_monitoring())
+    app.mount(f"{root_path}/auth", create_auth())
+    app.mount(f"{root_path}/iam", create_iam())
+    app.mount(f"{root_path}/core", create_core())
+    app.mount(f"{root_path}/mfa", create_mfa())
+    app.mount(f"{root_path}/onboarding", create_onboarding())
+    app.mount(f"{root_path}/health_monitoring", create_health_monitoring())
 
     # ── TESTING ──────────────────────────────────────────────────
     from app.microservices.message_sender.app import create_app as create_message_sender
     from app.microservices.logger_tracer.app import create_app as create_logger_tracer
 
-    app.mount("/message_sender", create_message_sender())
-    app.mount("/logger_tracer", create_logger_tracer())
+    app.mount(f"{root_path}/message_sender", create_message_sender())
+    app.mount(f"{root_path}/logger_tracer", create_logger_tracer())
 
     # ── PENDING: catalogs, organizations, expedient ──────────────
 

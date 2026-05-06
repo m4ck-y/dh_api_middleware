@@ -6,13 +6,13 @@ Preview: [{service_url}]({service_url})
 
 ## Overview
 
-Handles login, logout, silent refresh, and enriched user profile (/me).
+Handles login, logout, token refresh, and enriched user profile (/me).
 Uses HttpOnly cookies for stateless JWT.
 
 ## Endpoints
 
 - POST /login
-- POST /silent-refresh
+- POST /refresh
 - POST /logout
 - GET /me
 

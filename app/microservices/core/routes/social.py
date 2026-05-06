@@ -19,6 +19,7 @@ router = APIRouter(tags=["Social"])
 
 @router.post("/{uuid_person}/emergency-contacts", response_model=ApiResponseSingle[EmergencyContactResponseDTO], status_code=201)
 async def create_emergency_contact(uuid_person: str, payload: CreateEmergencyContactDTO):
+    """Add an emergency contact for a person."""
     status, data = await request(CORE_URL, "POST", f"v1/people/{uuid_person}/emergency-contacts", json=payload.model_dump())
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
@@ -31,6 +32,7 @@ async def list_emergency_contacts(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(50, ge=1, le=200, description="Items per page"),
 ):
+    """List all emergency contacts for a person."""
     params = {"page": page, "limit": limit}
     status, data = await request(CORE_URL, "GET", f"v1/people/{uuid_person}/emergency-contacts", params=params)
     if status >= 400:
@@ -40,6 +42,7 @@ async def list_emergency_contacts(
 
 @router.patch("/{uuid_person}/emergency-contacts", response_model=ApiResponseSingle[EmergencyContactResponseDTO])
 async def update_emergency_contact(uuid_person: str, payload: UpdateEmergencyContactDTO):
+    """Update a person's emergency contact (takes the first/single contact)."""
     status, data = await request(
         CORE_URL, "PATCH", f"v1/people/{uuid_person}/emergency-contacts",
         json=payload.model_dump(exclude_unset=True),
@@ -51,6 +54,7 @@ async def update_emergency_contact(uuid_person: str, payload: UpdateEmergencyCon
 
 @router.delete("/{uuid_person}/emergency-contacts", status_code=204)
 async def delete_emergency_contact(uuid_person: str):
+    """Delete a person's emergency contact (takes the first/single contact)."""
     status, data = await request(CORE_URL, "DELETE", f"v1/people/{uuid_person}/emergency-contacts")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
