@@ -20,6 +20,8 @@ from app.microservices.core.domain import (
 router = APIRouter(prefix="/v1/people", tags=["Contact"])
 
 
+# ── EMAILS ─────────────────────────────────────────────────────────────────────
+
 @router.post("/{uuid_person}/emails", response_model=ApiResponseSingle[EmailResponseDTO], status_code=201)
 async def create_email(uuid_person: str, payload: CreateEmailDTO):
     """Add an email to a person."""
@@ -43,11 +45,20 @@ async def list_emails(
     return data
 
 
-@router.patch("/{uuid_person}/emails", response_model=ApiResponseSingle[EmailResponseDTO])
-async def update_email(uuid_person: str, payload: UpdateEmailDTO):
-    """Update a person's email (takes the first/single email)."""
+@router.get("/emails/{uuid_email}", response_model=ApiResponseSingle[EmailResponseDTO])
+async def get_email(uuid_email: str):
+    """Get a specific email by its UUID."""
+    status, data = await request(CORE_URL, "GET", f"v1/people/emails/{uuid_email}")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
+    return data
+
+
+@router.patch("/emails/{uuid_email}", response_model=ApiResponseSingle[EmailResponseDTO])
+async def update_email(uuid_email: str, payload: UpdateEmailDTO):
+    """Update an email by its UUID."""
     status, data = await request(
-        CORE_URL, "PATCH", f"v1/people/{uuid_person}/emails",
+        CORE_URL, "PATCH", f"v1/people/emails/{uuid_email}",
         json=payload.model_dump(exclude_unset=True),
     )
     if status >= 400:
@@ -55,14 +66,16 @@ async def update_email(uuid_person: str, payload: UpdateEmailDTO):
     return data
 
 
-@router.delete("/{uuid_person}/emails", status_code=204)
-async def delete_email(uuid_person: str):
-    """Delete a person's email (takes the first/single email)."""
-    status, data = await request(CORE_URL, "DELETE", f"v1/people/{uuid_person}/emails")
+@router.delete("/emails/{uuid_email}", status_code=204)
+async def delete_email(uuid_email: str):
+    """Delete an email by its UUID."""
+    status, data = await request(CORE_URL, "DELETE", f"v1/people/emails/{uuid_email}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return None
 
+
+# ── PHONES ─────────────────────────────────────────────────────────────────────
 
 @router.post("/{uuid_person}/phones", response_model=ApiResponseSingle[PhoneResponseDTO], status_code=201)
 async def create_phone(uuid_person: str, payload: CreatePhoneDTO):
@@ -87,11 +100,20 @@ async def list_phones(
     return data
 
 
-@router.patch("/{uuid_person}/phones", response_model=ApiResponseSingle[PhoneResponseDTO])
-async def update_phone(uuid_person: str, payload: UpdatePhoneDTO):
-    """Update a person's phone (takes the first/single phone)."""
+@router.get("/phones/{uuid_phone}", response_model=ApiResponseSingle[PhoneResponseDTO])
+async def get_phone(uuid_phone: str):
+    """Get a specific phone by its UUID."""
+    status, data = await request(CORE_URL, "GET", f"v1/people/phones/{uuid_phone}")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
+    return data
+
+
+@router.patch("/phones/{uuid_phone}", response_model=ApiResponseSingle[PhoneResponseDTO])
+async def update_phone(uuid_phone: str, payload: UpdatePhoneDTO):
+    """Update a phone by its UUID."""
     status, data = await request(
-        CORE_URL, "PATCH", f"v1/people/{uuid_person}/phones",
+        CORE_URL, "PATCH", f"v1/people/phones/{uuid_phone}",
         json=payload.model_dump(exclude_unset=True),
     )
     if status >= 400:
@@ -99,10 +121,10 @@ async def update_phone(uuid_person: str, payload: UpdatePhoneDTO):
     return data
 
 
-@router.delete("/{uuid_person}/phones", status_code=204)
-async def delete_phone(uuid_person: str):
-    """Delete a person's phone (takes the first/single phone)."""
-    status, data = await request(CORE_URL, "DELETE", f"v1/people/{uuid_person}/phones")
+@router.delete("/phones/{uuid_phone}", status_code=204)
+async def delete_phone(uuid_phone: str):
+    """Delete a phone by its UUID."""
+    status, data = await request(CORE_URL, "DELETE", f"v1/people/phones/{uuid_phone}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return None

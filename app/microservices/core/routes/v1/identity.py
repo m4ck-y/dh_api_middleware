@@ -40,11 +40,20 @@ async def list_identifiers(
     return data
 
 
-@router.patch("/{uuid_person}/identifiers", response_model=ApiResponseSingle[IdentifierResponseDTO])
-async def update_identifier(uuid_person: str, payload: UpdateIdentifierDTO):
-    """Update a person's identifier (takes the first/single identifier)."""
+@router.get("/identifiers/{uuid_identifier}", response_model=ApiResponseSingle[IdentifierResponseDTO])
+async def get_identifier(uuid_identifier: str):
+    """Get a specific identifier by its UUID."""
+    status, data = await request(CORE_URL, "GET", f"v1/people/identifiers/{uuid_identifier}")
+    if status >= 400:
+        raise HTTPException(status_code=status, detail=data)
+    return data
+
+
+@router.patch("/identifiers/{uuid_identifier}", response_model=ApiResponseSingle[IdentifierResponseDTO])
+async def update_identifier(uuid_identifier: str, payload: UpdateIdentifierDTO):
+    """Update an identifier by its UUID."""
     status, data = await request(
-        CORE_URL, "PATCH", f"v1/people/{uuid_person}/identifiers",
+        CORE_URL, "PATCH", f"v1/people/identifiers/{uuid_identifier}",
         json=payload.model_dump(exclude_unset=True),
     )
     if status >= 400:
@@ -52,10 +61,10 @@ async def update_identifier(uuid_person: str, payload: UpdateIdentifierDTO):
     return data
 
 
-@router.delete("/{uuid_person}/identifiers", status_code=204)
-async def delete_identifier(uuid_person: str):
-    """Delete a person's identifier (takes the first/single identifier)."""
-    status, data = await request(CORE_URL, "DELETE", f"v1/people/{uuid_person}/identifiers")
+@router.delete("/identifiers/{uuid_identifier}", status_code=204)
+async def delete_identifier(uuid_identifier: str):
+    """Delete an identifier by its UUID."""
+    status, data = await request(CORE_URL, "DELETE", f"v1/people/identifiers/{uuid_identifier}")
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return None

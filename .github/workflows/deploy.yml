@@ -1,0 +1,26 @@
+name: Deploy api_middleware
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dh_api_middleware/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            echo "=== api_middleware ==="
+            cd /home/m4ck-y/.me/dh/dh_api_middleware
+            git pull origin main
+            /home/m4ck-y/.local/bin/uv sync --frozen
+            sudo systemctl restart dh_api_middleware
+            sudo systemctl status dh_api_middleware --no-pager
