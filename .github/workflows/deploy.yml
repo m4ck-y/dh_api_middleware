@@ -1,10 +1,8 @@
 name: Deploy api_middleware
 
 on:
-  push:
+push:
     branches: [main]
-    paths:
-      - "dh_api_middleware/**"
 
 jobs:
   deploy:
