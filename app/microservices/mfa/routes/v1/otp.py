@@ -14,7 +14,7 @@ from app.microservices.mfa.domain import (
     VerifyOtpResponseDTO,
 )
 
-router = APIRouter(tags=["OTP"])
+router = APIRouter(prefix="/v1/otp", tags=["OTP"])
 
 
 @router.post("/challenges", response_model=ApiResponseSingle[OtpChallengeResponseDTO], status_code=201)

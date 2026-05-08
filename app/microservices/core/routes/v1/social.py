@@ -14,7 +14,7 @@ from app.microservices.core.domain import (
     UpdateEmergencyContactDTO,
 )
 
-router = APIRouter(tags=["Social"])
+router = APIRouter(prefix="/v1/people", tags=["Social"])
 
 
 @router.post("/{uuid_person}/emergency-contacts", response_model=ApiResponseSingle[EmergencyContactResponseDTO], status_code=201)

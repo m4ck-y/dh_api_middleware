@@ -15,7 +15,7 @@ from app.microservices.iam.domain import (
     TenantUpdateDTO,
 )
 
-router = APIRouter(tags=["Tenants"])
+router = APIRouter(prefix="/v1/iam/tenants", tags=["Tenants"])
 
 
 @router.post("/", response_model=ApiResponseSingle[TenantResponseDTO], status_code=201)

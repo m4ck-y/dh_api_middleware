@@ -11,7 +11,7 @@ from app.microservices.iam.domain import (
     ContextResponseDTO,
 )
 
-router = APIRouter(tags=["Context"])
+router = APIRouter(prefix="/v1/iam", tags=["Context"])
 
 
 @router.get("/context/{uuid_person}", response_model=ApiResponseSingle[ContextResponseDTO])

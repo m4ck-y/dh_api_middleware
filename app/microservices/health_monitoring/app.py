@@ -21,7 +21,7 @@ Manages people, measurements, measure types, units, and reports.
 
 ## Backend
 
-Proxies to: `{settings.SERVICE_HEALTH_MONITORING_URL}`
+Proxies to: [{service_url}/docs]({service_url}/docs)
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.health_monitoring.routes import (
+    from app.microservices.health_monitoring.routes.v1 import (
         batch,
         measure_groups,
         measure_types,

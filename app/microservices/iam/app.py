@@ -20,7 +20,7 @@ RBAC with tenants, resources, operations, permissions, roles, and memberships.
 
 ## Backend
 
-Proxies to: `{settings.SERVICE_IAM_URL}`
+Proxies to: [{service_url}/docs]({service_url}/docs)
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.iam.routes import (
+    from app.microservices.iam.routes.v1 import (
         tenants,
         resources,
         operations,
@@ -53,14 +53,6 @@ def create_app(root_path: str = "") -> FastAPI:
         memberships,
         context,
     )
-
-    tenants.router.prefix = "/v1/iam/tenants"
-    resources.router.prefix = "/v1/iam/resources"
-    operations.router.prefix = "/v1/iam/operations"
-    permissions.router.prefix = "/v1/iam/permissions"
-    roles.router.prefix = "/v1/iam/roles"
-    memberships.router.prefix = "/v1/iam/memberships"
-    context.router.prefix = "/v1/iam"
 
     for m in [tenants, resources, operations, permissions, roles, memberships, context]:
         app.include_router(m.router)

@@ -37,10 +37,23 @@
 
 ## Services & Documentation
 
-| Service | Docs URL | Prefix |
-|---------|----------|--------|
-| Main Gateway | `/<BASE_PATH>/docs` | `/` |
-| Health Monitoring | `/<BASE_PATH>/health_monitoring/docs` | `/health_monitoring` |
+> All URLs prefixed by `ROOT_PATH` (`/api/middleware` by default).
+
+| Service | Status | Docs URL | Prefix |
+|---------|--------|----------|--------|
+| Main Gateway | RELEASED | `<ROOT_PATH>/docs` | `/` |
+| Auth | RELEASED | `<ROOT_PATH>/auth/docs` | `/auth` |
+| IAM | RELEASED | `<ROOT_PATH>/iam/docs` | `/iam` |
+| Core | RELEASED | `<ROOT_PATH>/core/docs` | `/core` |
+| MFA | RELEASED | `<ROOT_PATH>/mfa/docs` | `/mfa` |
+| Onboarding | RELEASED | `<ROOT_PATH>/onboarding/docs` | `/onboarding` |
+| Storage | RELEASED | `<ROOT_PATH>/storage/docs` | `/storage` |
+| Admin | RELEASED | `<ROOT_PATH>/admin/docs` | `/admin` |
+| Health Monitoring | RELEASED | `<ROOT_PATH>/health_monitoring/docs` | `/health_monitoring` |
+| Message Sender | TESTING | `<ROOT_PATH>/message_sender/docs` | `/message_sender` |
+| Logger Tracer | TESTING | `<ROOT_PATH>/logger_tracer/docs` | `/logger_tracer` |
+| Catalogs | PENDING | — | `/catalogs` |
+| Organizations | PENDING | — | `/organizations` |
 
 ## Structure
 
@@ -57,15 +70,16 @@ api_middleware/
 │   │   └── health.py         # Gateway health endpoint
 │   └── microservices/
 │       ├── __init__.py
-│       └── health_monitoring/
-│           ├── __init__.py
-│           ├── app.py         # Sub-app factory
-│           ├── domain/        # Pydantic schemas
-│           │   ├── __init__.py
-│           │   ├── person.py
-│           │   ├── measurement.py
-│           │   └── ...
-│           └── routes/        # Endpoint handlers
+│       ├── auth/
+│       ├── iam/
+│       ├── core/
+│       ├── mfa/
+│       ├── onboarding/
+│       ├── storage/
+│       ├── admin/
+│       ├── health_monitoring/
+│       ├── message_sender/
+│       └── logger_tracer/
 ```
 
 ## Adding a New Microservice
@@ -91,7 +105,7 @@ api_middleware/
 |----------|---------|-------------|
 | `HOST` | `0.0.0.0` | Host to bind |
 | `PORT` | `8000` | Port to bind |
-| `BASE_PATH` | `""` | Base path for the gateway (e.g. `/middleware`) |
+| `ROOT_PATH` | `"/api/middleware"` | Gateway root path (striped by ASGI before routing) |
 
 ### Microservices
 

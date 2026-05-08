@@ -15,7 +15,7 @@ from app.microservices.iam.domain import (
     ResourceUpdateDTO,
 )
 
-router = APIRouter(tags=["Resources"])
+router = APIRouter(prefix="/v1/iam/resources", tags=["Resources"])
 
 
 @router.post("/", response_model=ApiResponseSingle[ResourceResponseDTO], status_code=201)

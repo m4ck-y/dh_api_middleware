@@ -20,7 +20,7 @@ Manages persons, contact info (email, phone, address), identifiers, and emergenc
 
 ## Backend
 
-Proxies to: `{settings.SERVICE_CORE_URL}`
+Proxies to: [{service_url}/docs]({service_url}/docs)
 """
 
 from __future__ import annotations
@@ -44,14 +44,7 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.core.routes import people, address, contact, identity, social, validation
-
-    people.router.prefix = "/v1/people"
-    address.router.prefix = "/v1/people"
-    contact.router.prefix = "/v1/people"
-    identity.router.prefix = "/v1/people"
-    social.router.prefix = "/v1/people"
-    validation.router.prefix = "/v1/people"
+    from app.microservices.core.routes.v1 import people, address, contact, identity, social, validation
 
     for m in [people, address, contact, identity, social, validation]:
         app.include_router(m.router)

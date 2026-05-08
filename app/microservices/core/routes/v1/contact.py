@@ -17,7 +17,7 @@ from app.microservices.core.domain import (
     UpdatePhoneDTO,
 )
 
-router = APIRouter(tags=["Contact"])
+router = APIRouter(prefix="/v1/people", tags=["Contact"])
 
 
 @router.post("/{uuid_person}/emails", response_model=ApiResponseSingle[EmailResponseDTO], status_code=201)

@@ -14,7 +14,7 @@ from app.microservices.core.domain import (
     UpdateAddressDTO,
 )
 
-router = APIRouter(tags=["Address"])
+router = APIRouter(prefix="/v1/people", tags=["Address"])
 
 
 @router.post("/{uuid_person}/address", response_model=ApiResponseSingle[None], status_code=201)

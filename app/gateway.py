@@ -14,18 +14,19 @@ Frontend points here instead of individual microservices.
 
 | Service | Status | Docs | Prefix |
 |---------|--------|------|--------|
-| Main | RELEASED | [{base_path}/docs]({base_path}/docs) | `/` |
-| Auth | RELEASED | [{base_path}/auth/docs]({base_path}/auth/docs) | `/auth` |
-| IAM | RELEASED | [{base_path}/iam/docs]({base_path}/iam/docs) | `/iam` |
-| Core | RELEASED | [{base_path}/core/docs]({base_path}/core/docs) | `/core` |
-| MFA | RELEASED | [{base_path}/mfa/docs]({base_path}/mfa/docs) | `/mfa` |
-| Onboarding | RELEASED | [{base_path}/onboarding/docs]({base_path}/onboarding/docs) | `/onboarding` |
-| Health Monitoring | RELEASED | [{base_path}/health_monitoring/docs]({base_path}/health_monitoring/docs) | `/health_monitoring` |
-| Message Sender | TESTING | [{base_path}/message_sender/docs]({base_path}/message_sender/docs) | `/message_sender` |
-| Logger Tracer | TESTING | [{base_path}/logger_tracer/docs]({base_path}/logger_tracer/docs) | `/logger_tracer` |
+| Main | RELEASED | [{root_path}/docs]({root_path}/docs) | `/` |
+| Auth | RELEASED | [{root_path}/auth/docs]({root_path}/auth/docs) | `/auth` |
+| IAM | RELEASED | [{root_path}/iam/docs]({root_path}/iam/docs) | `/iam` |
+| Core | RELEASED | [{root_path}/core/docs]({root_path}/core/docs) | `/core` |
+| MFA | RELEASED | [{root_path}/mfa/docs]({root_path}/mfa/docs) | `/mfa` |
+| Onboarding | RELEASED | [{root_path}/onboarding/docs]({root_path}/onboarding/docs) | `/onboarding` |
+| Storage | RELEASED | [{root_path}/storage/docs]({root_path}/storage/docs) | `/storage` |
+| Health Monitoring | RELEASED | [{root_path}/health_monitoring/docs]({root_path}/health_monitoring/docs) | `/health_monitoring` |
+| Message Sender | TESTING | [{root_path}/message_sender/docs]({root_path}/message_sender/docs) | `/message_sender` |
+| Logger Tracer | TESTING | [{root_path}/logger_tracer/docs]({root_path}/logger_tracer/docs) | `/logger_tracer` |
+| Admin | RELEASED | [{root_path}/admin/docs]({root_path}/admin/docs) | `/admin` |
 | Catalogs | PENDING | — | `/catalogs` |
 | Organizations | PENDING | — | `/organizations` |
-| Expedient | PENDING | — | `/expedient` |
 
 ## Environment
 
@@ -46,7 +47,7 @@ def create_app() -> FastAPI:
         root_path=settings.ROOT_PATH,
         title="API Gateway",
         version="0.1.0",
-        description=__doc__.format(base_path=root_path),
+        description=__doc__.format(root_path=root_path),
         docs_url="/docs",
         redoc_url="/redoc",
     )

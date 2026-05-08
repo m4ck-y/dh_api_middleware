@@ -16,7 +16,7 @@ Orchestrates the multi-step onboarding process: waitlist, personal info, OTP, pa
 
 ## Backend
 
-Proxies to: `{settings.SERVICE_ONBOARDING_URL}`
+Proxies to: [{service_url}/docs]({service_url}/docs)
 """
 
 from __future__ import annotations
@@ -40,11 +40,7 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.onboarding.routes import waitlist, onboarding, legacy
-
-    waitlist.router.prefix = "/v1/waitlist"
-    onboarding.router.prefix = "/v1/onboarding"
-    legacy.router.prefix = "/v1/onboarding/legacy"
+    from app.microservices.onboarding.routes.v1 import waitlist, onboarding, legacy
 
     for m in [waitlist, onboarding, legacy]:
         app.include_router(m.router)

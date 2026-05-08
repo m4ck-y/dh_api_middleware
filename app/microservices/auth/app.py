@@ -18,7 +18,7 @@ Uses HttpOnly cookies for stateless JWT.
 
 ## Backend
 
-Proxies to: `{settings.SERVICE_AUTH_URL}`
+Proxies to: [{service_url}/docs]({service_url}/docs)
 """
 
 from __future__ import annotations
@@ -42,9 +42,8 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.auth.routes.auth import router as auth_router
+    from app.microservices.auth.routes.v1.auth import router as auth_router
 
-    auth_router.prefix = "/v1/auth"
     app.include_router(auth_router)
 
     return app

@@ -8,16 +8,16 @@ Preview: [{service_url}]({service_url})
 
 Centralized API for multi-channel communication management.
 
-## Capabilities
+## Endpoints
 
-- **OTP Messaging** - Secure identity verification.
-- **Onboarding (Welcome)** - Personalized user welcome notifications.
-- **Waitlist Tracking** - Registration confirmation for waitlists.
-- **Audit Logs** - Centralized tracking of every message dispatched.
+- OTP notifications (send OTP codes)
+- Waitlist notifications (confirmation + invite)
+- Onboarding welcome messages
+- Audit logs (message dispatch tracing)
 
 ## Backend
 
-Proxies to: `{settings.SERVICE_MESSAGE_SENDER_URL}`
+Proxies to: [{service_url}/docs]({service_url}/docs)
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.message_sender.routes import audit, otp, waitlist
+    from app.microservices.message_sender.routes.v1 import audit, otp, waitlist
 
     app.include_router(otp.router)
     app.include_router(waitlist.router)

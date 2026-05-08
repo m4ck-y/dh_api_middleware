@@ -17,7 +17,7 @@ from app.microservices.onboarding.domain import (
     RegisterLeadDTO,
 )
 
-router = APIRouter(tags=["Waitlist"])
+router = APIRouter(prefix="/v1/waitlist", tags=["Waitlist"])
 
 
 @router.post("/", response_model=ApiResponseSingle[LeadResponseDTO], status_code=201)

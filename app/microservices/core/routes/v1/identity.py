@@ -14,7 +14,7 @@ from app.microservices.core.domain import (
     UpdateIdentifierDTO,
 )
 
-router = APIRouter(tags=["Identity"])
+router = APIRouter(prefix="/v1/people", tags=["Identity"])
 
 
 @router.post("/{uuid_person}/identifiers", response_model=ApiResponseSingle[IdentifierResponseDTO], status_code=201)

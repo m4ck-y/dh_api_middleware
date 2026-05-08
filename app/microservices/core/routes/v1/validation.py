@@ -13,7 +13,7 @@ from app.microservices.core.domain import (
     PersonExistsResponseDTO,
 )
 
-router = APIRouter(tags=["Validation"])
+router = APIRouter(prefix="/v1/people", tags=["Validation"])
 
 
 @router.get("/check-exists", response_model=ApiResponseSingle[PersonExistsResponseDTO])

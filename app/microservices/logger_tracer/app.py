@@ -18,7 +18,7 @@ Centralized system for log and event ingestion.
 
 ## Backend
 
-Proxies to: `{settings.SERVICE_LOGGER_TRACER_URL}`
+Proxies to: [{service_url}/docs]({service_url}/docs)
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.logger_tracer.routes import (
+    from app.microservices.logger_tracer.routes.v1 import (
         events,
         logs,
         metrics,

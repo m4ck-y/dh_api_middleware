@@ -14,7 +14,7 @@ from app.microservices.iam.domain import (
     PermissionResponseDTO,
 )
 
-router = APIRouter(tags=["Permissions"])
+router = APIRouter(prefix="/v1/iam/permissions", tags=["Permissions"])
 
 
 @router.post("/", response_model=ApiResponseSingle[PermissionResponseDTO], status_code=201)

@@ -15,7 +15,7 @@ from app.microservices.auth.domain.auth_dto import (
 )
 from app.shared.domain import ApiResponseSingle
 
-router = APIRouter()
+router = APIRouter(prefix="/v1/auth")
 
 
 def _cookie_header(req: Request) -> dict[str, str]:

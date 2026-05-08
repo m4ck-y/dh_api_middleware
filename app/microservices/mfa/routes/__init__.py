@@ -1,5 +1,3 @@
-"""MFA routes."""
-
-from app.microservices.mfa.routes import otp
+from app.microservices.mfa.routes.v1 import otp
 
 __all__ = ["otp"]

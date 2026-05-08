@@ -14,7 +14,7 @@ from app.microservices.onboarding.domain import (
     LegacyRegistroBody,
 )
 
-router = APIRouter(tags=["Onboarding — Legacy"])
+router = APIRouter(prefix="/v1/onboarding/legacy", tags=["Onboarding — Legacy"])
 
 
 @router.post("/preregistro/registro", response_model=ApiResponseSingle, status_code=201)

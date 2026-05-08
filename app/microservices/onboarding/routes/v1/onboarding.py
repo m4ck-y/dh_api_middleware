@@ -24,7 +24,7 @@ from app.microservices.onboarding.domain import (
     PersonalInfoDTO,
 )
 
-router = APIRouter(tags=["Onboarding"])
+router = APIRouter(prefix="/v1/onboarding", tags=["Onboarding"])
 
 
 @router.post("/start", response_model=ApiResponseSingle[OnboardingStartResponseDTO])

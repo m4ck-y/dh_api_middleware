@@ -16,7 +16,7 @@ Generates and verifies one-time password challenges.
 
 ## Backend
 
-Proxies to: `{settings.SERVICE_MFA_URL}`
+Proxies to: [{service_url}/docs]({service_url}/docs)
 """
 
 from __future__ import annotations
@@ -40,9 +40,8 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.mfa.routes import otp
+    from app.microservices.mfa.routes.v1 import otp
 
-    otp.router.prefix = "/v1/otp"
     app.include_router(otp.router)
 
     return app

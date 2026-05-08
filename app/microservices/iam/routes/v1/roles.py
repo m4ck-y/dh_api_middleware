@@ -16,7 +16,7 @@ from app.microservices.iam.domain import (
     RoleUpdateDTO,
 )
 
-router = APIRouter(tags=["Roles"])
+router = APIRouter(prefix="/v1/iam/roles", tags=["Roles"])
 
 
 @router.post("/", response_model=ApiResponseSingle[RoleResponseDTO], status_code=201)

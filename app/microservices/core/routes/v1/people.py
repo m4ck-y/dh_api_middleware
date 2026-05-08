@@ -16,7 +16,7 @@ from app.microservices.core.domain import (
     UpdatePersonStatusDTO,
 )
 
-router = APIRouter(tags=["People"])
+router = APIRouter(prefix="/v1/people", tags=["People"])
 
 
 @router.get("/", response_model=ApiResponsePaginated[PersonResponseDTO])
