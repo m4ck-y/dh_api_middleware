@@ -131,3 +131,27 @@ uv run uvicorn app.main:app --reload
 - **Main gateway**: `http://localhost:8000/middleware/docs`
 - **Health Monitoring**: `http://localhost:8000/middleware/health_monitoring/docs`
 - **Health check**: `GET /middleware/health`
+
+## Systemd Service Management
+
+### 1. Copiar definición del servicio
+
+```bash
+sudo cp /home/m4ck-y/.me/dh/api_middleware/docs/api_middleware.service /etc/systemd/system/
+```
+
+O crearlo manualmente:
+
+```bash
+sudo nano /etc/systemd/system/dh_api_middleware.service
+```
+
+### 2. Gestionar el servicio
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable api_middleware
+sudo systemctl start api_middleware
+sudo systemctl status api_middleware
+journalctl -u api_middleware -f
+```
