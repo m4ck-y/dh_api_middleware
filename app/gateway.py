@@ -14,19 +14,19 @@ Frontend points here instead of individual microservices.
 
 | Service | Status | Docs | Prefix |
 |---------|--------|------|--------|
-| Main | TESTING | [{root_path}/docs]({root_path}/docs) | `/` |
-| Auth | TESTING | [{root_path}/auth/docs]({root_path}/auth/docs) | `/auth` |
-| IAM | RELEASED | [{root_path}/iam/docs]({root_path}/iam/docs) | `/iam` |
-| Core | RELEASED | [{root_path}/core/docs]({root_path}/core/docs) | `/core` |
-| MFA | RELEASED | [{root_path}/mfa/docs]({root_path}/mfa/docs) | `/mfa` |
-| Onboarding | RELEASED | [{root_path}/onboarding/docs]({root_path}/onboarding/docs) | `/onboarding` |
-| Storage | RELEASED | [{root_path}/storage/docs]({root_path}/storage/docs) | `/storage` |
-| Health Monitoring | TESTING | [{root_path}/health_monitoring/docs]({root_path}/health_monitoring/docs) | `/health_monitoring` |
-| Notify | RELEASED | [{root_path}/notify/docs]({root_path}/notify/docs) | `/notify` |
-| Logger | RELEASED | [{root_path}/logger/docs]({root_path}/logger/docs) | `/logger` |
-| Admin | RELEASED | [{root_path}/admin/docs]({root_path}/admin/docs) | `/admin` |
-| Catalogs | PENDING | — | `/catalogs` |
-| Organizations | PENDING | — | `/organizations` |
+| Main | 🟡 TESTING | [{root_path}/docs]({root_path}/docs) | `/` |
+| Auth | 🟡 TESTING | [{root_path}/auth/docs]({root_path}/auth/docs) | `/auth` |
+| IAM | 🟢 RELEASED | [{root_path}/iam/docs]({root_path}/iam/docs) | `/iam` |
+| Core | 🟢 RELEASED | [{root_path}/core/docs]({root_path}/core/docs) | `/core` |
+| MFA | 🟢 RELEASED | [{root_path}/mfa/docs]({root_path}/mfa/docs) | `/mfa` |
+| Onboarding | 🟢 RELEASED | [{root_path}/onboarding/docs]({root_path}/onboarding/docs) | `/onboarding` |
+| Storage | 🟢 RELEASED | [{root_path}/storage/docs]({root_path}/storage/docs) | `/storage` |
+| Health Monitoring | 🟡 TESTING | [{root_path}/health_monitoring/docs]({root_path}/health_monitoring/docs) | `/health_monitoring` |
+| Notify | 🟢 RELEASED | [{root_path}/notify/docs]({root_path}/notify/docs) | `/notify` |
+| Logger | 🟢 RELEASED | [{root_path}/logger/docs]({root_path}/logger/docs) | `/logger` |
+| Admin | 🟢 RELEASED | [{root_path}/admin/docs]({root_path}/admin/docs) | `/admin` |
+| Catalogs | 🔴 PENDING | — | `/catalogs` |
+| Organizations | 🔴 PENDING | — | `/organizations` |
 
 ## Environment
 

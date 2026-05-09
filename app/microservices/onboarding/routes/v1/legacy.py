@@ -14,7 +14,7 @@ from app.microservices.onboarding.domain import (
     LegacyRegistroBody,
 )
 
-router = APIRouter(prefix="/v1/onboarding/legacy", tags=["Onboarding — Legacy"])
+router = APIRouter(prefix="/v1/applicant/legacy", tags=["Applicant — Legacy"])
 
 
 @router.post("/preregistro/registro", response_model=ApiResponseSingle, status_code=201)
@@ -24,7 +24,7 @@ async def legacy_registro(payload: LegacyRegistroBody):
     Creates Person + email + phone + auth.user.
     rol is recorded but only applied to iam.membership after admin approval.
     """
-    status, data = await request(ONBOARDING_URL, "POST", "v1/onboarding/legacy/preregistro/registro", json=payload.model_dump())
+    status, data = await request(ONBOARDING_URL, "POST", "v1/applicant/legacy/preregistro/registro", json=payload.model_dump())
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data
@@ -36,7 +36,7 @@ async def legacy_guardar_curp(uuid_person: str, payload: LegacyCurpBody):
     Legacy: POST /preregistro/curp/subir
     Maps to personal-info. CURP validation is skipped (OMITIR_VALIDACION_Y_GUARDADO_CURP).
     """
-    status, data = await request(ONBOARDING_URL, "POST", "v1/onboarding/legacy/curp/subir", params={"uuid_person": uuid_person}, json=payload.model_dump())
+    status, data = await request(ONBOARDING_URL, "POST", "v1/applicant/legacy/curp/subir", params={"uuid_person": uuid_person}, json=payload.model_dump())
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data
@@ -45,7 +45,7 @@ async def legacy_guardar_curp(uuid_person: str, payload: LegacyCurpBody):
 @router.post("/direccion/guardar", response_model=ApiResponseSingle)
 async def legacy_guardar_direccion(uuid_person: str, payload: LegacyDireccionBody):
     """Legacy: POST /preregistro/direccion/guardar → address use case."""
-    status, data = await request(ONBOARDING_URL, "POST", "v1/onboarding/legacy/direccion/guardar", params={"uuid_person": uuid_person}, json=payload.model_dump())
+    status, data = await request(ONBOARDING_URL, "POST", "v1/applicant/legacy/direccion/guardar", params={"uuid_person": uuid_person}, json=payload.model_dump())
     if status >= 400:
         raise HTTPException(status_code=status, detail=data)
     return data
@@ -66,7 +66,7 @@ async def legacy_subir_ine(
     upload_files = [("file", (file.filename, content, file.content_type or "application/octet-stream"))]
     status, data = await request(
         ONBOARDING_URL, "POST",
-        "v1/onboarding/legacy/ine/subir-pdf",
+        "v1/applicant/legacy/ine/subir-pdf",
         params={"uuid_person": uuid_person},
         data={"uuid_document_subtype_ine": str(uuid_document_subtype_ine)},
         files=upload_files,
@@ -90,7 +90,7 @@ async def legacy_subir_comprobante(
     upload_files = [("file", (file.filename, content, file.content_type or "application/octet-stream"))]
     status, data = await request(
         ONBOARDING_URL, "POST",
-        "v1/onboarding/legacy/comprobante/subir",
+        "v1/applicant/legacy/comprobante/subir",
         params={"uuid_person": uuid_person},
         data={"uuid_document_subtype_proof": str(uuid_document_subtype_proof)},
         files=upload_files,
