@@ -27,8 +27,8 @@ from fastapi import FastAPI
 
 from app.settings import settings
 
-LOGGER_TRACER_URL = settings.SERVICE_LOGGER_TRACER_URL.rstrip("/")
-_DESC = __doc__.replace("{service_url}", LOGGER_TRACER_URL) if LOGGER_TRACER_URL else __doc__
+LOGGER_URL = settings.SERVICE_LOGGER_URL.rstrip("/")
+_DESC = __doc__.replace("{service_url}", LOGGER_URL) if LOGGER_URL else __doc__
 
 
 def create_app(root_path: str = "") -> FastAPI:
@@ -43,7 +43,7 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.logger_tracer.routes.v1 import (
+    from app.microservices.logger.routes.v1 import (
         events,
         logs,
         metrics,

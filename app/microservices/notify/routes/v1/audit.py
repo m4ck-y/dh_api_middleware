@@ -3,9 +3,9 @@ from app.http_client import request
 from app.settings import settings
 from typing import List, Optional
 from datetime import datetime
-from app.microservices.message_sender.domain.models import MessageAuditEntry, MessageStatus
+from app.microservices.notify.domain.models import MessageAuditEntry, MessageStatus
 
-MESSAGE_SENDER_URL = settings.SERVICE_MESSAGE_SENDER_URL.rstrip("/")
+NOTIFY_URL = settings.SERVICE_NOTIFY_URL.rstrip("/")
 
 router = APIRouter(prefix="/v1/audit", tags=["Audit"])
 
@@ -25,7 +25,7 @@ async def get_audit_logs(
         params["since"] = since.isoformat()
         
     status_code, data = await request(
-        MESSAGE_SENDER_URL, "GET", "v1/audit/messages", params=params
+        NOTIFY_URL, "GET", "v1/audit/messages", params=params
     )
     if status_code >= 400:
         raise HTTPException(status_code=status_code, detail=data)
@@ -35,7 +35,7 @@ async def get_audit_logs(
 async def audit_health():
     """Verify audit storage connectivity."""
     status_code, data = await request(
-        MESSAGE_SENDER_URL, "GET", "v1/audit/health"
+        NOTIFY_URL, "GET", "v1/audit/health"
     )
     if status_code >= 400:
         raise HTTPException(status_code=status_code, detail=data)

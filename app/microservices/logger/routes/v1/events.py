@@ -3,9 +3,9 @@ from typing import Optional
 from app.http_client import request
 from app.settings import settings
 from app.shared.domain.api_response import ApiResponsePaginated, ApiResponseSingle
-from app.microservices.logger_tracer.domain.models import EventEntry
+from app.microservices.logger.domain.models import EventEntry
 
-LOGGER_TRACER_URL = settings.SERVICE_LOGGER_TRACER_URL.rstrip("/")
+LOGGER_URL = settings.SERVICE_LOGGER_URL.rstrip("/")
 
 router = APIRouter(prefix="/events", tags=["Events"])
 
@@ -21,7 +21,7 @@ async def get_events(
         params["query"] = query
         
     status_code, data = await request(
-        LOGGER_TRACER_URL, "GET", "events", params=params
+        LOGGER_URL, "GET", "events", params=params
     )
     if status_code >= 400:
         raise HTTPException(status_code=status_code, detail=data)
@@ -31,7 +31,7 @@ async def get_events(
 async def create_event(payload: EventEntry):
     """Ingest a single high-level event."""
     status_code, data = await request(
-        LOGGER_TRACER_URL, "POST", "events", json=payload.model_dump(mode="json")
+        LOGGER_URL, "POST", "events", json=payload.model_dump(mode="json")
     )
     if status_code >= 400:
         raise HTTPException(status_code=status_code, detail=data)

@@ -26,8 +26,8 @@ from fastapi import FastAPI
 
 from app.settings import settings
 
-MESSAGE_SENDER_URL = settings.SERVICE_MESSAGE_SENDER_URL.rstrip("/")
-_DESC = __doc__.replace("{service_url}", MESSAGE_SENDER_URL) if MESSAGE_SENDER_URL else __doc__
+NOTIFY_URL = settings.SERVICE_NOTIFY_URL.rstrip("/")
+_DESC = __doc__.replace("{service_url}", NOTIFY_URL) if NOTIFY_URL else __doc__
 
 
 def create_app(root_path: str = "") -> FastAPI:
@@ -42,7 +42,7 @@ def create_app(root_path: str = "") -> FastAPI:
         root_path=root_path,
     )
 
-    from app.microservices.message_sender.routes.v1 import audit, otp, waitlist
+    from app.microservices.notify.routes.v1 import audit, otp, waitlist
 
     app.include_router(otp.router)
     app.include_router(waitlist.router)

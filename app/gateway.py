@@ -14,16 +14,16 @@ Frontend points here instead of individual microservices.
 
 | Service | Status | Docs | Prefix |
 |---------|--------|------|--------|
-| Main | RELEASED | [{root_path}/docs]({root_path}/docs) | `/` |
-| Auth | RELEASED | [{root_path}/auth/docs]({root_path}/auth/docs) | `/auth` |
+| Main | TESTING | [{root_path}/docs]({root_path}/docs) | `/` |
+| Auth | TESTING | [{root_path}/auth/docs]({root_path}/auth/docs) | `/auth` |
 | IAM | RELEASED | [{root_path}/iam/docs]({root_path}/iam/docs) | `/iam` |
 | Core | RELEASED | [{root_path}/core/docs]({root_path}/core/docs) | `/core` |
 | MFA | RELEASED | [{root_path}/mfa/docs]({root_path}/mfa/docs) | `/mfa` |
 | Onboarding | RELEASED | [{root_path}/onboarding/docs]({root_path}/onboarding/docs) | `/onboarding` |
 | Storage | RELEASED | [{root_path}/storage/docs]({root_path}/storage/docs) | `/storage` |
-| Health Monitoring | RELEASED | [{root_path}/health_monitoring/docs]({root_path}/health_monitoring/docs) | `/health_monitoring` |
-| Message Sender | TESTING | [{root_path}/message_sender/docs]({root_path}/message_sender/docs) | `/message_sender` |
-| Logger Tracer | TESTING | [{root_path}/logger_tracer/docs]({root_path}/logger_tracer/docs) | `/logger_tracer` |
+| Health Monitoring | TESTING | [{root_path}/health_monitoring/docs]({root_path}/health_monitoring/docs) | `/health_monitoring` |
+| Notify | RELEASED | [{root_path}/notify/docs]({root_path}/notify/docs) | `/notify` |
+| Logger | RELEASED | [{root_path}/logger/docs]({root_path}/logger/docs) | `/logger` |
 | Admin | RELEASED | [{root_path}/admin/docs]({root_path}/admin/docs) | `/admin` |
 | Catalogs | PENDING | — | `/catalogs` |
 | Organizations | PENDING | — | `/organizations` |
@@ -70,6 +70,10 @@ def create_app() -> FastAPI:
     from app.microservices.mfa.app import create_app as create_mfa
     from app.microservices.onboarding.app import create_app as create_onboarding
     from app.microservices.health_monitoring.app import create_app as create_health_monitoring
+    #from app.microservices.storage.app import create_app as create_storage
+    from app.microservices.admin.app import create_app as create_admin
+    from app.microservices.notify.app import create_app as create_message_sender
+    from app.microservices.logger.app import create_app as create_logger_tracer
 
     app.mount("/auth", create_auth(root_path=f"{root_path}/auth"))
     app.mount("/iam", create_iam(root_path=f"{root_path}/iam"))
@@ -77,13 +81,10 @@ def create_app() -> FastAPI:
     app.mount("/mfa", create_mfa(root_path=f"{root_path}/mfa"))
     app.mount("/onboarding", create_onboarding(root_path=f"{root_path}/onboarding"))
     app.mount("/health_monitoring", create_health_monitoring(root_path=f"{root_path}/health_monitoring"))
-
-    # ── TESTING ──────────────────────────────────────────────────
-    from app.microservices.message_sender.app import create_app as create_message_sender
-    from app.microservices.logger_tracer.app import create_app as create_logger_tracer
-
-    app.mount("/message_sender", create_message_sender(root_path=f"{root_path}/message_sender"))
-    app.mount("/logger_tracer", create_logger_tracer(root_path=f"{root_path}/logger_tracer"))
+    #app.mount("/storage", create_storage(root_path=f"{root_path}/storage"))
+    app.mount("/notify", create_message_sender(root_path=f"{root_path}/notify"))
+    app.mount("/logger", create_logger_tracer(root_path=f"{root_path}/logger"))
+    app.mount("/admin", create_admin(root_path=f"{root_path}/admin"))
 
     # ── PENDING: catalogs, organizations, expedient ──────────────
 

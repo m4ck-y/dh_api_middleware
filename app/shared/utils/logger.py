@@ -19,12 +19,12 @@ class ELogLevel(str, Enum):
 
 async def _push(endpoint: str, payload: dict) -> None:
     """Fire-and-forget to VitalTrace. Never raises — logger failures must not affect the service."""
-    if not settings.SERVICE_LOGGER_TRACER_URL:
+    if not settings.SERVICE_LOGGER_URL:
         return
     try:
         async with httpx.AsyncClient(timeout=2.0) as client:
             await client.post(
-                f"{settings.SERVICE_LOGGER_TRACER_URL}/v1/{endpoint}/",
+                f"{settings.SERVICE_LOGGER_URL}/v1/{endpoint}/",
                 json=payload,
             )
     except Exception:

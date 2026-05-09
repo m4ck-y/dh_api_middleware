@@ -50,8 +50,8 @@
 | Storage | RELEASED | `<ROOT_PATH>/storage/docs` | `/storage` |
 | Admin | RELEASED | `<ROOT_PATH>/admin/docs` | `/admin` |
 | Health Monitoring | RELEASED | `<ROOT_PATH>/health_monitoring/docs` | `/health_monitoring` |
-| Message Sender | TESTING | `<ROOT_PATH>/message_sender/docs` | `/message_sender` |
-| Logger Tracer | TESTING | `<ROOT_PATH>/logger_tracer/docs` | `/logger_tracer` |
+| Notify | TESTING | `<ROOT_PATH>/notify/docs` | `/notify` |
+| Logger | TESTING | `<ROOT_PATH>/logger/docs` | `/logger` |
 | Catalogs | PENDING | — | `/catalogs` |
 | Organizations | PENDING | — | `/organizations` |
 
@@ -78,8 +78,8 @@ api_middleware/
 │       ├── storage/
 │       ├── admin/
 │       ├── health_monitoring/
-│       ├── message_sender/
-│       └── logger_tracer/
+│       ├── notify/
+│       └── logger/
 ```
 
 ## Adding a New Microservice

@@ -3,9 +3,9 @@ from typing import Optional
 from app.http_client import request
 from app.settings import settings
 from app.shared.domain.api_response import ApiResponsePaginated, ApiResponseSingle
-from app.microservices.logger_tracer.domain.models import MetricEntry
+from app.microservices.logger.domain.models import MetricEntry
 
-LOGGER_TRACER_URL = settings.SERVICE_LOGGER_TRACER_URL.rstrip("/")
+LOGGER_URL = settings.SERVICE_LOGGER_URL.rstrip("/")
 
 router = APIRouter(prefix="/metrics", tags=["Metrics"])
 
@@ -21,7 +21,7 @@ async def get_metrics(
         params["query"] = query
         
     status_code, data = await request(
-        LOGGER_TRACER_URL, "GET", "metrics", params=params
+        LOGGER_URL, "GET", "metrics", params=params
     )
     if status_code >= 400:
         raise HTTPException(status_code=status_code, detail=data)
@@ -31,7 +31,7 @@ async def get_metrics(
 async def create_metric(payload: MetricEntry):
     """Ingest a single metric entry."""
     status_code, data = await request(
-        LOGGER_TRACER_URL, "POST", "metrics", json=payload.model_dump(mode="json")
+        LOGGER_URL, "POST", "metrics", json=payload.model_dump(mode="json")
     )
     if status_code >= 400:
         raise HTTPException(status_code=status_code, detail=data)

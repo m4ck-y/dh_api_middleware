@@ -21,7 +21,7 @@ router = APIRouter(prefix="/v1/otp", tags=["OTP"])
 async def create_challenge(payload: CreateOtpDTO):
     """
     Create a new OTP challenge and dispatch the code via PulseCore.
-    Called by backend services (e.g. dh_onboarding_back) — not directly by the frontend.
+    Called by backend services (e.g. dh_onboarding) — not directly by the frontend.
     """
     status, data = await request(MFA_URL, "POST", "v1/otp/challenges", json=payload.model_dump())
     if status >= 400:

@@ -10,12 +10,11 @@ class Settings(BaseSettings):
 
     HOST: str = "[IP_ADDRESS]"
     PORT: int = 8000
-    BASE_PATH: str = ""
     ROOT_PATH: str = "/api/middleware"
     ENVIRONMENT: str = "development"
     SERVICE_HEALTH_MONITORING_URL: str = ""
-    SERVICE_LOGGER_TRACER_URL: str = ""
-    SERVICE_MESSAGE_SENDER_URL: str = ""
+    SERVICE_LOGGER_URL: str = ""
+    SERVICE_NOTIFY_URL: str = ""
     # Core services
     SERVICE_CORE_URL: str = ""
     SERVICE_AUTH_URL: str = ""
