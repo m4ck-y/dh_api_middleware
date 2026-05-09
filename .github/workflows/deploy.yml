@@ -1,7 +1,7 @@
 name: Deploy api_middleware
 
 on:
-push:
+  push:
     branches: [main]
 
 jobs:
